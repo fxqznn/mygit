@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * @Version 1.0
  */
 @TableName("course")
-public class course {
+public class Course {
     @TableId(type = IdType.AUTO)
     private int cid;
 
