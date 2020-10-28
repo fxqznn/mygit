@@ -24,6 +24,25 @@ public class StudentScore {
     private int did;//打分时所处部门
 
 
+    private int eid;
+    private int did;
+
+    public int getEid() {
+        return eid;
+    }
+
+    public void setEid(int eid) {
+        this.eid = eid;
+    }
+
+    public int getDid() {
+        return did;
+    }
+
+    public void setDid(int did) {
+        this.did = did;
+    }
+
     public int getSsid() {
         return ssid;
     }
