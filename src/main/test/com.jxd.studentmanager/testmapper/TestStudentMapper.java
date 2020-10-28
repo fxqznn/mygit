@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ import java.util.Map;
 @RunWith(SpringRunner.class)//用谁作为启动器去加载所有的底层配置
 @SpringBootTest(classes = StudentManagerApplication.class)
 public class TestStudentMapper {
-    @Autowired
+    @Resource
     private IStudentMapper studentMapper;
 
     @Test
