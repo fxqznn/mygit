@@ -1,6 +1,15 @@
 package com.jxd.studentmanager.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jxd.studentmanager.model.User;
+import com.jxd.studentmanager.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @ClassName UserController
@@ -11,4 +20,20 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public class UserController {
+    @Autowired
+    private IUserService userService;
+    @RequestMapping("/login/{uname}/{pwd}")
+    public User login(@PathVariable("uname") String uname, @PathVariable("pwd") String pwd){
+        Map<String,Object> map = new HashMap<>();
+        map.put("uname",uname);
+        map.put("pwd",pwd);
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.allEq(map,true);
+        User user = userService.getOne(queryWrapper,true);
+        if (user != null){
+            return user;
+        }else {
+            return null;
+        }
+    }
 }
