@@ -14,5 +14,5 @@ spring:
 #注册映射文件
 #设置实体类的别名
 mybatis-plus:
-  mapper-locations: classpath:/mapper/*.xml
+  mapper-locations: classpath*:com/jxd/studentmanager/mapper/mapping/*.xml
   type-aliases-package: com.jxd.studentmanager.model
