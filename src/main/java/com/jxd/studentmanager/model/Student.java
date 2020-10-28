@@ -28,8 +28,8 @@ public class Student {
     private String major;
     private String pic;
     private String info;
-    private int tid;
-    private int eid;
+    private int tid;//学期
+    private int eid;//员工
 
     public int getSid() {
         return sid;

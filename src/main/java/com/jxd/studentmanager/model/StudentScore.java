@@ -20,6 +20,9 @@ public class StudentScore {
     private int cid;
     private double score; //0-5
     private int type;
+    private int eid;//打分人
+    private int did;//打分时所处部门
+
 
     public int getSsid() {
         return ssid;
@@ -59,5 +62,21 @@ public class StudentScore {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getEid() {
+        return eid;
+    }
+
+    public void setEid(int eid) {
+        this.eid = eid;
+    }
+
+    public int getDid() {
+        return did;
+    }
+
+    public void setDid(int did) {
+        this.did = did;
     }
 }

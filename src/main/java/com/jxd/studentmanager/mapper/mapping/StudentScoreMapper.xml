@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--接口的全路径，用于关联dao层接口-->
+<mapper namespace="com.jxd.studentmanager.mapper.IStudentScoreMapper">
+    <resultMap id="abilities" type="java.util.List">
+        <!--property代表实体类属性名称-->
+        <!--column代表数据库字段名称-->
+        <!--id标签用于设置主键-->
+        <id property="ssid" column="ssid"/>
+        <result property="cid" column="cid"/>
+        <result property="cname" column="cname"/>
+        <result property="score" column="score"/>
+        <result property="dname" column="dname"/>
+        <result property="ename" column="ename"/>
+    </resultMap>
+    <resultMap id="courses" type="java.util.List">
+        <!--property代表实体类属性名称-->
+        <!--column代表数据库字段名称-->
+        <!--id标签用于设置主键-->
+        <id property="ssid" column="ssid"/>
+        <result property="cid" column="cid"/>
+        <result property="cname" column="cname"/>
+        <result property="score" column="score"/>
+        <result property="tname" column="tname"/>
+        <result property="teacher" column="ename"/>
+    </resultMap>
+
+    <select id="selectCourses" resultMap="courses">
+        select t2.*,e.ename from (select t1.*,c.cname from (select ss.ssid,ss.cid,ss.score,ss.sid,t.tname from studentscore ss
+        left join term t on t.tid = ss.tid where sid = #{sid} and ss.type=-1 ) t1 left join course c on t1.cid = c.cid) t2 left
+        join emp e on t2.eid = e.eid
+    </select>
+
+    <select id="selectAbilities" resultMap="abilities">
+        select * from ss.*,c.cname from studentscore ss left join course c on c.cid=ss.sid where sid = #{sid} and ss.type = #{type}
+    </select>
+
+</mapper>
