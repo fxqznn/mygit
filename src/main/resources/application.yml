@@ -8,7 +8,7 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/jinqiao
     driver-class-name: com.mysql.jdbc.Driver
     username: root
-    password: 123456
+    password: root
 
 
 #注册映射文件

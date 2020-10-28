@@ -25,9 +25,4 @@ public class TestStudentMapper {
     @Resource
     private IStudentMapper studentMapper;
 
-    @Test
-    public void testSelectDetails() {
-        Map<String, Object> map = studentMapper.selectDetails(1);
-        System.out.println(map.toString());
-    }
 }

@@ -21,6 +21,25 @@ public class StudentScore {
     private double score; //0-5
     private int type;
 
+    private int eid;
+    private int did;
+
+    public int getEid() {
+        return eid;
+    }
+
+    public void setEid(int eid) {
+        this.eid = eid;
+    }
+
+    public int getDid() {
+        return did;
+    }
+
+    public void setDid(int did) {
+        this.did = did;
+    }
+
     public int getSsid() {
         return ssid;
     }
