@@ -5,10 +5,11 @@ server:
 #设置数据源信息
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/mysql
+    url: jdbc:mysql://127.0.0.1:3306/jinqiao
     driver-class-name: com.mysql.jdbc.Driver
     username: root
-    password: root
+    password: 123456
+
 
 #注册映射文件
 #设置实体类的别名
