@@ -8,11 +8,10 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/jinqiao
     driver-class-name: com.mysql.jdbc.Driver
     username: root
-    password: 123456
+    password: root
 
 
 #注册映射文件
-#设置实体类的别名
 mybatis-plus:
-  mapper-locations: classpath:/mapper/*.xml
-  type-aliases-package: com.jxd.studentmanager.model
+  mapper-locations: classpath*:com/jxd/studentmanager/mapper/mapping/*.xml
+  type-aliases-package: com.jxd.studentmanager.model #设置实体类别名

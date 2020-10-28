@@ -6,8 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="mygit" />
+        <module name="mygit01" />
         <module name="jinqiaostudentmanager" />
+        <module name="mygit" />
       </profile>
     </annotationProcessing>
   </component>
@@ -15,6 +16,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="jinqiaostudentmanager" options="-parameters" />
       <module name="mygit" options="-parameters" />
+      <module name="mygit01" options="-parameters" />
     </option>
   </component>
 </project>
