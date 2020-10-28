@@ -1,6 +1,7 @@
 package com.jxd.studentmanager.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @ClassName EmpController
@@ -11,4 +12,10 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public class EmpController {
+
+    @RequestMapping("/getEmpList")
+    public String getEmpList(){
+        return "";
+    }
+
 }
