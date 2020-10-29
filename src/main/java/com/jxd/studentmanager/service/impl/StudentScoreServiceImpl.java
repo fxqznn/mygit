@@ -34,8 +34,8 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     }
 
     @Override
-    public boolean updateEmpScore(int cid,double grade,int sid){
-        return studentScoreMapper.updateEmpScore(cid,grade,sid);
+    public boolean updateEmpScore(int cid, double grade, int sid) {
+        return studentScoreMapper.updateEmpScore(cid, grade, sid);
     }
 
     @Override

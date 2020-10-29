@@ -39,9 +39,9 @@ public class TestStucentScoreService {
     }
 
     @Test
-    public void updateScores(){
-        boolean flag = scoreService.updateEmpScore(1,4.0,1);
-        System.out.println("修改结果是："+flag);
+    public void updateScores() {
+        boolean flag = scoreService.updateEmpScore(1, 4.0, 1);
+        System.out.println("修改结果是：" + flag);
     }
 
     @Test

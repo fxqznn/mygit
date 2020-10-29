@@ -38,10 +38,10 @@ public class StudentScoreController {
 
     @RequestMapping("/updateEmpScore")
     @ResponseBody
-    public String updateEmpScore(int cid,double grade,int sid){
-        if(studentScoreService.updateEmpScore(cid,grade,sid)){
+    public String updateEmpScore(int cid, double grade, int sid) {
+        if (studentScoreService.updateEmpScore(cid, grade, sid)) {
             return "success";
-        } else{
+        } else {
             return "false";
         }
     }

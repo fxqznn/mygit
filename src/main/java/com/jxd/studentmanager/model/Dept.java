@@ -1,8 +1,6 @@
 package com.jxd.studentmanager.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 /**
  * @ClassName Dept
@@ -18,6 +16,8 @@ public class Dept {
 
     private String dname;
     private int dheader;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private int isdel; //0-未删除 1-已删除
 
     public int getDid() {

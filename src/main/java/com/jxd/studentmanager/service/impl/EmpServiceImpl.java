@@ -16,11 +16,4 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EmpServiceImpl extends ServiceImpl<IEmpMapper, Emp> implements IEmpService {
-    @Autowired
-    private IEmpMapper empMapper;
-
-    @Override
-    public int getLastInsertId() {
-        return empMapper.getLastInsertId();
-    }
 }
