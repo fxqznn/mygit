@@ -15,6 +15,10 @@
         <result property="dname" column="dname"/>
         <result property="ename" column="ename"/>
     </resultMap>
+    <resultMap id="entity" type="java.util.Map">
+        <id property="cid" column="cid"/>
+        <result property="cname" column="cname"/>
+    </resultMap>
     <resultMap id="courses" type="java.util.Map">
         <!--property代表实体类属性名称-->
         <!--column代表数据库字段名称-->
@@ -27,10 +31,7 @@
         <result property="ename" column="ename"/>
     </resultMap>
 
-    <resultMap id="entity" type="java.util.Map">
-        <id property="enid" column="enid"/>
-        <result property="enname" column="enname"/>
-    </resultMap>
+
 
     <select id="selectCourses" resultMap="courses">
         select t3.*,c.cname from
@@ -53,8 +54,13 @@
         update studentscore set score = #{grade} where cid = #{cid} and sid = #{sid}
     </update>
 
+
+
     <select id="getAllEntity" resultMap="entity">
-        select *from entity
+        select t1.cid,cname from
+        (select ss.*,c.cname from studentscore ss left join
+        course c on c.cid=ss.cid where  ss.type = #{type}) t1
+        left join emp e on e.eid = t1.eid where e.eid = #{eid}
     </select>
 
 </mapper>

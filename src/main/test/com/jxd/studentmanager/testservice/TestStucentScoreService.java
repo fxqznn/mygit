@@ -46,7 +46,7 @@ public class TestStucentScoreService {
 
     @Test
     public void getAllEntity(){
-        List<Map<String, Object>> list = scoreService.getAllEntity();
+        List<Map<String, Object>> list = scoreService.getAllEntity(1,0);
         System.out.println(list.size());
     }
 

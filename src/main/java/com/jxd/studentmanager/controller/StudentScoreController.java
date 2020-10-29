@@ -48,8 +48,8 @@ public class StudentScoreController {
 
     @RequestMapping("/getAllEntity")
     @ResponseBody
-    public List<Map<String,Object>> getAllEntity(){
-        return studentScoreService.getAllEntity();
+    public List<Map<String,Object>> getAllEntity(int eid,int type){
+        return studentScoreService.getAllEntity(eid,type);
     }
 
 }
