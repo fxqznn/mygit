@@ -172,6 +172,17 @@ public class EmpController {
     }
 
     /**
-     * 删除多个员工的信息，调用每个
+     * 删除多个员工的信息，调用删除个人的方法
      */
+    @RequestMapping(value = "delEmpsByIds")
+    @ResponseBody
+    public String delEmpsByIds(int[] eids){
+        for(int eid : eids){
+            String result = delEmpById(eid);
+            if(result.equals("fail")){
+                return "fail";
+            }
+        }
+        return "success";
+    }
 }
