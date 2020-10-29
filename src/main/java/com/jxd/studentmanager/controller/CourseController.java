@@ -40,7 +40,7 @@ public class CourseController {
      */
     @RequestMapping("/getCourses")
     @ResponseBody
-    public List<Map<String,Object>> getCoursesBytid(int tid){
+    public List<Course> getCoursesBytid(int tid){
         return courseService.selectCoursesByTid(tid);
     }
 
@@ -113,6 +113,7 @@ public class CourseController {
             return "修改成功";
         }
     }
+
     @RequestMapping(value = "updateCourse",produces = "html/text;charset=utf-8")
     @ResponseBody
     public String updateCourseBatch(Course course){
