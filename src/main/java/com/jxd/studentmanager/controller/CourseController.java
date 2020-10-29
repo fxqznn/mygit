@@ -113,4 +113,17 @@ public class CourseController {
             return "修改成功";
         }
     }
+    @RequestMapping(value = "updateCourse",produces = "html/text;charset=utf-8")
+    @ResponseBody
+    public String updateCourseBatch(Course course){
+        boolean flag = false;
+        UpdateWrapper<Course> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("cid",course.getCid());
+        flag = courseService.update(course,updateWrapper);
+        if (!flag){
+            return "修改失败";
+        } else {
+            return "修改成功";
+        }
+    }
 }
