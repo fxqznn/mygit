@@ -27,6 +27,11 @@
         <result property="ename" column="ename"/>
     </resultMap>
 
+    <resultMap id="entity" type="java.util.Map">
+        <id property="enid" column="enid"/>
+        <result property="enname" column="enname"/>
+    </resultMap>
+
     <select id="selectCourses" resultMap="courses">
         select t3.*,c.cname from
         (select t2.*,e.ename from
@@ -47,5 +52,9 @@
     <update id="updateEmpScore">
         update studentscore set score = #{grade} where cid = #{cid} and sid = #{sid}
     </update>
+
+    <select id="getAllEntity" resultMap="entity">
+        select *from entity
+    </select>
 
 </mapper>

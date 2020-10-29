@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 import java.util.Map;
+import java.util.spi.LocaleServiceProvider;
 
 /**
  * @ClassName TestStucentScoreService
@@ -42,4 +43,11 @@ public class TestStucentScoreService {
         boolean flag = scoreService.updateEmpScore(1,4.0,1);
         System.out.println("修改结果是："+flag);
     }
+
+    @Test
+    public void getAllEntity(){
+        List<Map<String, Object>> list = scoreService.getAllEntity();
+        System.out.println(list.size());
+    }
+
 }

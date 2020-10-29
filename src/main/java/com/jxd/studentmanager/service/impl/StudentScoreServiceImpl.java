@@ -38,4 +38,10 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
         return studentScoreMapper.updateEmpScore(cid,grade,sid);
     }
 
+    @Override
+    public List<Map<String, Object>> getAllEntity() {
+        return studentScoreMapper.getAllEntity();
+    }
+
+
 }

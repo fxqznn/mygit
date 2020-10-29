@@ -46,4 +46,10 @@ public class StudentScoreController {
         }
     }
 
+    @RequestMapping("/getAllEntity")
+    @ResponseBody
+    public List<Map<String,Object>> getAllEntity(){
+        return studentScoreService.getAllEntity();
+    }
+
 }
