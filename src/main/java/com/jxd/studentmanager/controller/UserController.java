@@ -67,20 +67,16 @@ public class UserController {
      */
     @RequestMapping(value = "getAllUser")
     @ResponseBody
-    public Map<String,Object> getAllUser(Page<User> page, int role, String uname){
-        Map<String,Object> map = new HashMap<>();
-
-        int userCount = 0;
+    public IPage<User> getAllUser(Page<User> page, int role, String uname){
         IPage<User> list = null;
+
         QueryWrapper<User> wrapper = new QueryWrapper<>();
 
         if(role == -1){
             if(uname == null || uname == ""){
-                userCount= userService.count();
                 list = userService.page(page);
             } else {
                 wrapper.likeRight("ename",uname);
-                userCount = userService.count(wrapper);
                 list = userService.page(page,wrapper);
             }
         } else {
@@ -89,14 +85,9 @@ public class UserController {
             } else {
                 wrapper.likeRight("uname",uname).eq("role",role);
             }
-            userCount = userService.count(wrapper);
             list = userService.page(page,wrapper);
         }
-
-        map.put("count",userCount);
-        map.put("list",list);
-
-        return map;
+        return list;
     }
 
     /**

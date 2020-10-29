@@ -49,27 +49,20 @@ public class EmpController {
      */
     @RequestMapping(value = "getAllEmp" , produces = "application/json;charset=utf-8")
     @ResponseBody
-    public Map<String, Object> getAllEmp(Page<Emp> page, String ename){
-        Map<String,Object> map = new HashMap<>();
+    public IPage<Emp> getAllEmp(Page<Emp> page, String ename){
 
-        int empCount = 0;
         IPage<Emp> list = null;
 
         if(ename == null || ename == ""){
-            empCount = empService.count();
             list = empService.page(page);
 
         } else {
             QueryWrapper<Emp> wrapper =  new QueryWrapper<>();
             wrapper.like("ename",ename);
-            empCount = empService.count(wrapper);
             list = empService.page(page,wrapper);
         }
 
-        map.put("count",empCount);
-        map.put("list",list);
-
-        return map;
+        return list;
     }
 
     /**
@@ -78,7 +71,7 @@ public class EmpController {
      * @param role  前端传递过来的为账户赋值的权限
      * @return
      */
-    @RequestMapping(value = "addEmpWithUser")
+    @RequestMapping(value = "addEmp")
     @ResponseBody
     public String addEmpWithUser(Emp emp, int role){
         boolean flag = empService.save(emp);
