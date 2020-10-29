@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jxd.studentmanager.mapper.IEmpMapper;
 import com.jxd.studentmanager.model.Emp;
 import com.jxd.studentmanager.service.IEmpService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,4 +16,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EmpServiceImpl extends ServiceImpl<IEmpMapper, Emp> implements IEmpService {
+    @Autowired
+    private IEmpMapper empMapper;
+
+    @Override
+    public int getLastInsertId() {
+        return empMapper.getLastInsertId();
+    }
 }
