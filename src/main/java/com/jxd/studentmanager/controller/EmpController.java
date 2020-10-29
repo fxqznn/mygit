@@ -1,6 +1,7 @@
 package com.jxd.studentmanager.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.model.Emp;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +92,8 @@ public class EmpController {
             student.setSname(emp.getEname());
             student.setEid(eid);
             flag = studentService.save(student);
+            emp.setSid(student.getSid());
+            flag = empService.save(emp);
         }
         if(flag){
             return "success";
@@ -132,9 +136,9 @@ public class EmpController {
      * @param eid
      * @return
      */
-    @RequestMapping(value = "delEmpById")
+    @RequestMapping(value = "delEmpByIdCascade")
     @ResponseBody
-    public String delEmpById(int eid){
+    public String delEmpByIdCascade(int eid){
         boolean flag = false;
 
         QueryWrapper<User> wrapper = new QueryWrapper<>();
@@ -151,15 +155,18 @@ public class EmpController {
             QueryWrapper<Student> wrapper1 = new QueryWrapper<>();
             wrapper1.eq("eid",eid);
             Student student = studentService.getOne(wrapper1);
-            QueryWrapper<StudentScore> wrapper2 = new QueryWrapper<>();
+
+            UpdateWrapper<StudentScore> wrapper2 = new UpdateWrapper<>();
             wrapper2.eq("sid",student.getSid());
             flag = studentScoreService.remove(wrapper2);
+
             flag = studentService.removeById(student.getEid());
         } else {
             //教师或者部门经理账号
             QueryWrapper<StudentScore> wrapper1 = new QueryWrapper<>();
             wrapper1.eq("eid",eid);
             int num = studentScoreService.count(wrapper1);
+
             if(num == 0){
                 flag = empService.removeById(eid);
             } else {
@@ -175,12 +182,23 @@ public class EmpController {
         }
     }
 
+    @RequestMapping(value = "delEmpById")
+    @ResponseBody
+    public String delEmpById(int eid){
+        boolean flag = empService.removeById(eid);
+        if(flag){
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
     /**
      * 删除多个员工的信息，调用删除个人的方法
      */
-    @RequestMapping(value = "delEmpsByIds")
+    @RequestMapping(value = "delEmpsByIdsCascade")
     @ResponseBody
-    public String delEmpsByIds(int[] eids){
+    public String delEmpsByIdsCascade(int[] eids){
         for(int eid : eids){
             String result = delEmpById(eid);
             if(result.equals("fail")){
@@ -188,5 +206,20 @@ public class EmpController {
             }
         }
         return "success";
+    }
+
+    @RequestMapping(value = "delEmpsByIds")
+    @ResponseBody
+    public String delEmpsByIds(int[] eids){
+        List<Integer> list = new ArrayList<>();
+        for(int eid : eids){
+            list.add(eid);
+        }
+        boolean flag = empService.removeByIds(list);
+        if(flag){
+            return "success";
+        } else {
+            return "fail";
+        }
     }
 }

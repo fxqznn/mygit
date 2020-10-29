@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.model.Emp;
 import com.jxd.studentmanager.model.Student;
+import com.jxd.studentmanager.model.StudentScore;
 import com.jxd.studentmanager.model.User;
 import com.jxd.studentmanager.service.IEmpService;
+import com.jxd.studentmanager.service.IStudentScoreService;
 import com.jxd.studentmanager.service.IStudentService;
 import com.jxd.studentmanager.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.URIParameter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +39,8 @@ public class UserController {
     private IEmpService empService;
     @Autowired
     private IStudentService studentService;
+    @Autowired
+    private IStudentScoreService studentScoreService;
 
     @RequestMapping("/login/{uname}/{pwd}")
     @ResponseBody
@@ -157,6 +163,11 @@ public class UserController {
         }
     }
 
+    /**
+     * 设置密码为默认密码
+     * @param uid
+     * @return
+     */
     @RequestMapping(value = "setDefaultPwd")
     @ResponseBody
     public String setDefaultPwd(int uid){
@@ -168,6 +179,95 @@ public class UserController {
             return "success";
         } else {
             return "fail";
+        }
+    }
+
+    /**
+     * 删除账号吧，并且根据账号所在角色进行级联删除
+     * @param uid
+     * @return
+     */
+    @RequestMapping(value = "delUserByIdCascade")
+    @ResponseBody
+    public String delUserWithEmp(int uid){
+        boolean flag = false;
+
+        User user = userService.getById(uid);
+
+        if(user.getRole() == 3){
+            //学生账号级联删除
+            QueryWrapper<Student> wrapper = new QueryWrapper<>();
+            wrapper.eq("eid",user.getUname());
+            Student student = studentService.getOne(wrapper);
+
+            UpdateWrapper<StudentScore> wrapper1 = new UpdateWrapper<>();
+            wrapper1.eq("sid",student.getSid());
+            studentScoreService.remove(wrapper1);
+
+            studentService.removeById(student.getSid());
+            flag = empService.removeById(user.getUname());
+        } else if (user.getRole() == 0){
+            //管理员账号级联删除
+            empService.removeById(user.getUname());
+        } else {
+            //部门经理或者老师账号级联删除
+            QueryWrapper<StudentScore> wrapper1 = new QueryWrapper<>();
+            wrapper1.eq("eid",user.getUname());
+            int num = studentScoreService.count(wrapper1);
+
+            if(num == 0){
+                flag = empService.removeById(user.getUname());
+            } else {
+                Emp emp = empService.getById(user.getUname());
+                emp.setIsdel(1);
+                flag = empService.updateById(emp);
+            }
+        }
+
+        flag = userService.removeById(uid);
+
+        if(flag){
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+    @RequestMapping(value = "delUserById")
+    @ResponseBody
+    public String delUserById(int uid){
+        boolean flag = userService.removeById(uid);
+        if(flag){
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+    @RequestMapping(value = "delUsersByIdsCascade")
+    @ResponseBody
+    public String delUsersByIdsCascade(int[] uids){
+        for(int uid : uids){
+            String result = delUserById(uid);
+            if(result.equals("fail")){
+                return "fail";
+            }
+        }
+        return "success";
+    }
+
+    @RequestMapping(value = "delUsersByIds")
+    @ResponseBody
+    public String delUsersByIds(int[] uids){
+        List<Integer> list = new ArrayList<>();
+        for(int uid : uids){
+            list.add(uid);
+        }
+        boolean flag = userService.removeByIds(list);
+        if(flag){
+            return "success";
+        } else {
+            return "error";
         }
     }
 
