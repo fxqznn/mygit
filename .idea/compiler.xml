@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="jinqiaostudentmanager" />
+        <module name="mygit02" />
         <module name="followSys1" />
         <module name="mygit03" />
         <module name="mygit01" />
         <module name="mygit" />
-        <module name="jinqiaostudentmanager" />
       </profile>
     </annotationProcessing>
   </component>
@@ -20,6 +21,7 @@
       <module name="jinqiaostudentmanager" options="-parameters" />
       <module name="mygit" options="-parameters" />
       <module name="mygit01" options="-parameters" />
+      <module name="mygit02" options="-parameters" />
       <module name="mygit03" options="-parameters" />
     </option>
   </component>
