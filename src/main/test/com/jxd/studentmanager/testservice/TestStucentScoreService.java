@@ -36,4 +36,10 @@ public class TestStucentScoreService {
         List<Map<String, Object>> list = scoreService.selectAbilities(1, 0);
         System.out.println(list.toString());
     }
+
+    @Test
+    public void updateScores(){
+        boolean flag = scoreService.updateEmpScore(1,4.0,1);
+        System.out.println("修改结果是："+flag);
+    }
 }
