@@ -15,4 +15,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CourseServiceImpl extends ServiceImpl<ICourseMapper, Course> implements ICourseService {
+    @Resource
+    private ICourseMapper courseMapper;
+    @Override
+    public List<Map<String, Object>> selectCoursesByTid(int tid) {
+        return courseMapper.selectCoursesBytid(tid);
+    }
 }
