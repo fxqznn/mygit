@@ -3,7 +3,4 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--接口的全路径，用于关联dao层接口-->
 <mapper namespace="com.jxd.studentmanager.mapper.IEmpMapper">
-    <select id="getLastInsertId" >
-        select last_insert_id() from emp
-    </select>
 </mapper>

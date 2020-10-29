@@ -47,23 +47,27 @@ public class EmpController {
      */
     @RequestMapping(value = "getAllEmp" , produces = "application/json;charset=utf-8")
     @ResponseBody
-    public List<Emp> getAllEmp(Page<Emp> page, String ename){
+    public Map<String, Object> getAllEmp(Page<Emp> page, String ename){
         Map<String,Object> map = new HashMap<>();
 
-        List<Emp> allList = empService.list();
-        int empCount = allList.size();
-        map.put("count",empCount);
+        int empCount = 0;
+        IPage<Emp> list = null;
 
         if(ename == null || ename == ""){
-            IPage<Emp> list = empService.page(page);
-            map.put("list",list);
+            empCount = empService.count();
+            list = empService.page(page);
+
         } else {
             QueryWrapper<Emp> wrapper =  new QueryWrapper<>();
             wrapper.like("ename",ename);
-            IPage<Emp> list = empService.page(page,wrapper);
-            map.put("list",list);
+            empCount = empService.count(wrapper);
+            list = empService.page(page,wrapper);
         }
-        return allList;
+
+        map.put("count",empCount);
+        map.put("list",list);
+
+        return map;
     }
 
     /**
@@ -76,7 +80,7 @@ public class EmpController {
     @ResponseBody
     public String addEmpWithUser(Emp emp, int role){
         boolean flag = empService.save(emp);
-        int eid = empService.getLastInsertId();
+        int eid = emp.getEid();
         User user = new User();
         user.setUname(eid);
         user.setRole(role);
