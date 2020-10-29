@@ -1,6 +1,22 @@
 package com.jxd.studentmanager.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.jxd.studentmanager.model.Course;
+import com.jxd.studentmanager.model.Term;
+import com.jxd.studentmanager.model.TermCourse;
+import com.jxd.studentmanager.model.User;
+import com.jxd.studentmanager.service.ICourseService;
+import com.jxd.studentmanager.service.ITermCourseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName CourseController
@@ -27,6 +43,7 @@ public class CourseController {
     public List<Map<String,Object>> getCoursesBytid(int tid){
         return courseService.selectCoursesByTid(tid);
     }
+
 
     /**
      * 老师往课程表中批量插入课程
