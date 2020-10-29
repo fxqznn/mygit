@@ -1,8 +1,6 @@
 package com.jxd.studentmanager.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 /**
  * @ClassName User
@@ -15,8 +13,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 public class User {
     @TableId(type = IdType.AUTO)
     private int uid;
+
     private int uname;  //员工工号
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String pwd;
+
     private int role;   /*0-管理员
                            1-教师
                            2-部门经理

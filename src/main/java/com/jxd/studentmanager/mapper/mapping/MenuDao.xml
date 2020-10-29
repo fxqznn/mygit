@@ -3,7 +3,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--接口的全路径，用于关联dao层接口-->
 <mapper namespace="com.jxd.studentmanager.mapper.IMenuMapper">
-    <select id="getLastInsertId">
-        select last_insert_id() from emp
+    <select id="qureyAllMenu" resultType="java.util.Map">
+        select m.mid,m.path,m.name,m.nameZh,m.component,m.iconCls,m.parentId
+        from rolemenu rm left join menu m on rm.mid = mid where rm.role = #{role}
     </select>
 </mapper>

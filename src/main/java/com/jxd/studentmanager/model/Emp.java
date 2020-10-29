@@ -1,8 +1,6 @@
 package com.jxd.studentmanager.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 /**
  * @ClassName Emp
@@ -13,12 +11,17 @@ import com.baomidou.mybatisplus.annotation.TableName;
  */
 @TableName("emp")
 public class Emp {
+
     @TableId(type = IdType.AUTO)
     private int eid;
 
     private String ename;
+
     private int did;    //部门主键
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private int isdel;  //0-未删除 1-已删除
+
     private String job;
     private int sid;    //学生主键
 

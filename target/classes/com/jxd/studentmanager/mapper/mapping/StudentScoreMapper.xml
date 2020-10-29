@@ -44,4 +44,8 @@
         left join emp e on e.eid = t1.eid
     </select>
 
+    <update id="updateEmpScore">
+        update studentscore set score = #{grade} where cid = #{cid} and sid = #{sid}
+    </update>
+
 </mapper>

@@ -32,4 +32,10 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     public List<Map<String, Object>> selectAbilities(int sid, int type) {
         return studentScoreMapper.selectAbilities(sid, type);
     }
+
+    @Override
+    public boolean updateEmpScore(int cid, double grade, int sid) {
+        return studentScoreMapper.updateEmpScore(cid, grade, sid);
+    }
+
 }

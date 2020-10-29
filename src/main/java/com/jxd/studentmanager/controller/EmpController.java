@@ -1,6 +1,7 @@
 package com.jxd.studentmanager.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.model.Emp;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,23 +49,42 @@ public class EmpController {
      */
     @RequestMapping(value = "getAllEmp" , produces = "application/json;charset=utf-8")
     @ResponseBody
-    public List<Emp> getAllEmp(Page<Emp> page, String ename){
-        Map<String,Object> map = new HashMap<>();
+    public IPage<Emp> getAllEmp(Page<Emp> page, String ename, int did) {
 
-        List<Emp> allList = empService.list();
-        int empCount = allList.size();
-        map.put("count",empCount);
+        IPage<Emp> list = null;
+        QueryWrapper<Emp> wrapper = new QueryWrapper<>();
 
-        if(ename == null || ename == ""){
-            IPage<Emp> list = empService.page(page);
-            map.put("list",list);
+        if (did == -1) {
+            //查询全部
+            if (ename == null || ename == "") {
+                wrapper.eq("isdel", 0);
+                list = empService.page(page, wrapper);
+
+            } else {
+                wrapper.like("ename", ename).eq("isdel", 0);
+                list = empService.page(page, wrapper);
+            }
+        } else if (did == 0) {
+            //查询没有部门的，插入的时候did应该是0的部门或者为空的部门
+            if (ename == null || ename == "") {
+                wrapper.eq("isdel", 0).and(querywrapper -> querywrapper.eq("did", 0).or().isNull("did"));
+                list = empService.page(page);
+            } else {
+                wrapper.like("ename", ename).eq("isdel", 0).and(querywrapper -> querywrapper.eq("did", 0).or().isNull("did"));
+                list = empService.page(page, wrapper);
+            }
+
         } else {
-            QueryWrapper<Emp> wrapper =  new QueryWrapper<>();
-            wrapper.like("ename",ename);
-            IPage<Emp> list = empService.page(page,wrapper);
-            map.put("list",list);
+            if (ename == null || ename == "") {
+                wrapper.eq("did", did).eq("isdel", 0);
+                list = empService.page(page);
+            } else {
+                wrapper.like("ename", ename).eq("did", did).eq("isdel", 0);
+                list = empService.page(page, wrapper);
+            }
         }
-        return allList;
+
+        return list;
     }
 
     /**
@@ -72,11 +93,11 @@ public class EmpController {
      * @param role  前端传递过来的为账户赋值的权限
      * @return
      */
-    @RequestMapping(value = "addEmpWithUser")
+    @RequestMapping(value = "addEmp")
     @ResponseBody
     public String addEmpWithUser(Emp emp, int role){
         boolean flag = empService.save(emp);
-        int eid = empService.getLastInsertId();
+        int eid = emp.getEid();
         User user = new User();
         user.setUname(eid);
         user.setRole(role);
@@ -86,6 +107,8 @@ public class EmpController {
             student.setSname(emp.getEname());
             student.setEid(eid);
             flag = studentService.save(student);
+            emp.setSid(student.getSid());
+            flag = empService.save(emp);
         }
         if(flag){
             return "success";
@@ -128,9 +151,9 @@ public class EmpController {
      * @param eid
      * @return
      */
-    @RequestMapping(value = "delEmpById")
+    @RequestMapping(value = "delEmpByIdCascade")
     @ResponseBody
-    public String delEmpById(int eid){
+    public String delEmpByIdCascade(int eid) {
         boolean flag = false;
 
         QueryWrapper<User> wrapper = new QueryWrapper<>();
@@ -147,15 +170,18 @@ public class EmpController {
             QueryWrapper<Student> wrapper1 = new QueryWrapper<>();
             wrapper1.eq("eid",eid);
             Student student = studentService.getOne(wrapper1);
-            QueryWrapper<StudentScore> wrapper2 = new QueryWrapper<>();
+
+            UpdateWrapper<StudentScore> wrapper2 = new UpdateWrapper<>();
             wrapper2.eq("sid",student.getSid());
             flag = studentScoreService.remove(wrapper2);
+
             flag = studentService.removeById(student.getEid());
         } else {
             //教师或者部门经理账号
             QueryWrapper<StudentScore> wrapper1 = new QueryWrapper<>();
             wrapper1.eq("eid",eid);
             int num = studentScoreService.count(wrapper1);
+
             if(num == 0){
                 flag = empService.removeById(eid);
             } else {
@@ -171,12 +197,23 @@ public class EmpController {
         }
     }
 
+    @RequestMapping(value = "delEmpById")
+    @ResponseBody
+    public String delEmpById(int eid) {
+        boolean flag = empService.removeById(eid);
+        if (flag) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
     /**
      * 删除多个员工的信息，调用删除个人的方法
      */
-    @RequestMapping(value = "delEmpsByIds")
+    @RequestMapping(value = "delEmpsByIdsCascade")
     @ResponseBody
-    public String delEmpsByIds(int[] eids){
+    public String delEmpsByIdsCascade(int[] eids) {
         for(int eid : eids){
             String result = delEmpById(eid);
             if(result.equals("fail")){
@@ -184,5 +221,20 @@ public class EmpController {
             }
         }
         return "success";
+    }
+
+    @RequestMapping(value = "delEmpsByIds")
+    @ResponseBody
+    public String delEmpsByIds(int[] eids) {
+        List<Integer> list = new ArrayList<>();
+        for (int eid : eids) {
+            list.add(eid);
+        }
+        boolean flag = empService.removeByIds(list);
+        if (flag) {
+            return "success";
+        } else {
+            return "fail";
+        }
     }
 }
