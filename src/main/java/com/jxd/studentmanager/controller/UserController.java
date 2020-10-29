@@ -1,6 +1,7 @@
 package com.jxd.studentmanager.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.model.Emp;
@@ -149,6 +150,20 @@ public class UserController {
     @ResponseBody
     public String editUser(User user){
         boolean flag = userService.updateById(user);
+        if(flag){
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+    @RequestMapping(value = "setDefaultPwd")
+    @ResponseBody
+    public String setDefaultPwd(int uid){
+        User user = userService.getById(uid);
+        user.setPwd(null);
+        boolean flag = userService.updateById(user);
+
         if(flag){
             return "success";
         } else {
