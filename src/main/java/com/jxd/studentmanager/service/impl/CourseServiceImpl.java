@@ -23,7 +23,7 @@ public class CourseServiceImpl extends ServiceImpl<ICourseMapper, Course> implem
     @Resource
     private ICourseMapper courseMapper;
     @Override
-    public List<Map<String, Object>> selectCoursesByTid(int tid) {
+    public List<Course> selectCoursesByTid(int tid) {
         return courseMapper.selectCoursesBytid(tid);
     }
 }

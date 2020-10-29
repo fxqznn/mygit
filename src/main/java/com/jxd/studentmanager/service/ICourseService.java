@@ -8,5 +8,5 @@ import java.util.Map;
 
 public interface ICourseService extends IService<Course> {
 
-    List<Map<String,Object>> selectCoursesByTid(int tid);
+    List<Course> selectCoursesByTid(int tid);
 }

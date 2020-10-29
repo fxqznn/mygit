@@ -13,6 +13,6 @@ public interface ICourseMapper extends BaseMapper<Course> {
      * @param tid
      * @return
      */
-    List<Map<String,Object>> selectCoursesBytid(@Param("tid") int tid);
+    List<Course> selectCoursesBytid(@Param("tid") int tid);
 
 }
