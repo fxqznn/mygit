@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jxd.studentmanager.mapper.IMenuMapper;
 import com.jxd.studentmanager.model.Menu;
 import com.jxd.studentmanager.service.IMenuService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,7 +19,7 @@ import java.util.Map;
  */
 @Service
 public class MenuServiceImpl extends ServiceImpl<IMenuMapper, Menu> implements IMenuService {
-    @Resource
+    @Autowired
     private IMenuMapper menuMapper;
 
     /**
