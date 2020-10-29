@@ -1,5 +1,6 @@
 package com.jxd.studentmanager.controller;
 
+import com.jxd.studentmanager.mapper.IStudentScoreMapper;
 import com.jxd.studentmanager.service.IStudentScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import java.util.Map;
 @Controller
 public class StudentScoreController {
 
+
     @Autowired
     private IStudentScoreService studentScoreService;
 
@@ -33,4 +35,15 @@ public class StudentScoreController {
     public List<Map<String, Object>> getScoreAbilities(int sid, int type) {
         return studentScoreService.selectAbilities(sid,type);
     }
+
+    @RequestMapping("/updateEmpScore")
+    @ResponseBody
+    public String updateEmpScore(int cid,double grade,int sid){
+        if(studentScoreService.updateEmpScore(cid,grade,sid)){
+            return "success";
+        } else{
+            return "false";
+        }
+    }
+
 }
