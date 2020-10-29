@@ -36,6 +36,7 @@ public class UserController {
     private IStudentService studentService;
 
     @RequestMapping("/login/{uname}/{pwd}")
+    @ResponseBody
     public User login(@PathVariable("uname") String uname, @PathVariable("pwd") String pwd){
         Map<String,Object> map = new HashMap<>();
         map.put("uname",uname);
@@ -120,6 +121,7 @@ public class UserController {
         user.setUname(eid);
         user.setRole(role);
         flag = userService.save(user);
+
         if(role == 3){
             //学生
             Student student = new Student();
@@ -131,6 +133,22 @@ public class UserController {
             flag = empService.updateById(emp);
         }
 
+        if(flag){
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+    /**
+     * 修改账号信息
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "editUser")
+    @ResponseBody
+    public String editUser(User user){
+        boolean flag = userService.updateById(user);
         if(flag){
             return "success";
         } else {
