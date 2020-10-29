@@ -49,17 +49,39 @@ public class EmpController {
      */
     @RequestMapping(value = "getAllEmp" , produces = "application/json;charset=utf-8")
     @ResponseBody
-    public IPage<Emp> getAllEmp(Page<Emp> page, String ename){
+    public IPage<Emp> getAllEmp(Page<Emp> page, String ename, int did){
 
         IPage<Emp> list = null;
+        QueryWrapper<Emp> wrapper =  new QueryWrapper<>();
 
-        if(ename == null || ename == ""){
-            list = empService.page(page);
+        if(did == -1){
+            //查询全部
+            if(ename == null || ename == ""){
+                wrapper.eq("isdel",0);
+                list = empService.page(page,wrapper);
+
+            } else {
+                wrapper.like("ename",ename).eq("isdel",0);
+                list = empService.page(page,wrapper);
+            }
+        } else if (did == 0) {
+            //查询没有部门的，插入的时候did应该是0的部门或者为空的部门
+            if(ename == null || ename == ""){
+                wrapper.eq("isdel",0).and(querywrapper -> querywrapper.eq("did",0).or().isNull("did"));
+                list = empService.page(page);
+            } else {
+                wrapper.like("ename",ename).eq("isdel",0).and(querywrapper -> querywrapper.eq("did",0).or().isNull("did"));
+                list = empService.page(page,wrapper);
+            }
 
         } else {
-            QueryWrapper<Emp> wrapper =  new QueryWrapper<>();
-            wrapper.like("ename",ename);
-            list = empService.page(page,wrapper);
+            if(ename == null || ename == ""){
+                wrapper.eq("did",did).eq("isdel",0);
+                list = empService.page(page);
+            } else {
+                wrapper.like("ename",ename).eq("did",did).eq("isdel",0);
+                list = empService.page(page,wrapper);
+            }
         }
 
         return list;

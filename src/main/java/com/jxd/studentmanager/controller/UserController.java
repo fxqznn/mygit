@@ -163,8 +163,11 @@ public class UserController {
     @ResponseBody
     public String setDefaultPwd(int uid){
         User user = userService.getById(uid);
-        user.setPwd(null);
-        boolean flag = userService.updateById(user);
+
+        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+        wrapper.setSql("pwd = default");
+
+        boolean flag = userService.update(user,wrapper);
 
         if(flag){
             return "success";
