@@ -3,9 +3,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--接口的全路径，用于关联dao层接口-->
 <mapper namespace="com.jxd.studentmanager.mapper.ICourseMapper">
-    <select id="selectCoursesBytid" resultType="com.jxd.studentmanager.model.Course">
+    <select id="selectCoursesByTid" resultType="Course">
         select c.cid,cname,isdel,type from course c left join termcourse tc on c.cid = tc.cid
-        <if test="tid != null and tid != ''">
+        <if test="tid != null and tid != 0">
             where tc.tid = #{tid}
         </if>
     </select>

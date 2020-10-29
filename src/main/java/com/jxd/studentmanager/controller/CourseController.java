@@ -2,6 +2,8 @@ package com.jxd.studentmanager.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.model.Course;
 import com.jxd.studentmanager.model.Term;
 import com.jxd.studentmanager.model.TermCourse;
@@ -40,8 +42,16 @@ public class CourseController {
      */
     @RequestMapping("/getCourses")
     @ResponseBody
-    public List<Course> getCoursesBytid(int tid){
-        return courseService.selectCoursesByTid(tid);
+    public IPage<Course> getCoursesBytid(Page<Course> page, int tid){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        IPage<Course> courseIPage = null;
+        if (tid != 0){
+            courseIPage = courseService.page(page);
+        }else {
+            queryWrapper.eq("tid",tid);
+            courseIPage = courseService.page(page,queryWrapper);
+        }
+        return courseIPage;
     }
 
 

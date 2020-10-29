@@ -24,6 +24,6 @@ public class CourseServiceImpl extends ServiceImpl<ICourseMapper, Course> implem
     private ICourseMapper courseMapper;
     @Override
     public List<Course> selectCoursesByTid(int tid) {
-        return courseMapper.selectCoursesBytid(tid);
+        return courseMapper.selectCoursesByTid(tid);
     }
 }
