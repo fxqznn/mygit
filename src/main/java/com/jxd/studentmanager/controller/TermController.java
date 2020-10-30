@@ -46,7 +46,7 @@ public class TermController {
         QueryWrapper<Term> wrapper = new QueryWrapper<>();
         IPage<Term> list = null;
 
-        if(tname == null || tname == ""){
+        if(tname == null || "".equals(tname)){
             list = termService.page(page);
         } else {
             wrapper.like("tname",tname);

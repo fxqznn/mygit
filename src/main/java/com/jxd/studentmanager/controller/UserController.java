@@ -73,14 +73,14 @@ public class UserController {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
 
         if(role == -1){
-            if(uname == null || uname == ""){
+            if(uname == null || "".equals(uname)){
                 list = userService.page(page);
             } else {
                 wrapper.likeRight("ename",uname);
                 list = userService.page(page,wrapper);
             }
         } else {
-            if(uname == null || uname == ""){
+            if(uname == null || "".equals(uname)){
                 wrapper.eq("role",role);
             } else {
                 wrapper.likeRight("uname",uname).eq("role",role);

@@ -67,14 +67,14 @@ public class StudentController {
         QueryWrapper<Student> wrapper = new QueryWrapper<>();
 
         if(tid == -1){
-            if(sname == null || sname == "") {
+            if(sname == null || "".equals(sname)) {
                 list = studentService.page(page);
             } else {
                 wrapper.like("sname",sname);
                 list = studentService.page(page,wrapper);
             }
         } else if(tid == 0){
-            if(sname == null || sname == "") {
+            if(sname == null || "".equals(sname)) {
                 wrapper.eq("tid",0).or().isNull("tid");
                 list = studentService.page(page,wrapper);
             } else {
@@ -82,7 +82,7 @@ public class StudentController {
                 list = studentService.page(page,wrapper);
             }
         } else {
-            if(sname == null || sname == "") {
+            if(sname == null || "".equals(sname)) {
                 wrapper.eq("tid",tid);
                 list = studentService.page(page,wrapper);
             } else {

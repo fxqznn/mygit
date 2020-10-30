@@ -56,7 +56,7 @@ public class EmpController {
 
         if (did == -1) {
             //查询全部
-            if (ename == null || ename == "") {
+            if (ename == null || "".equals(ename)) {
                 wrapper.eq("isdel", 0);
                 list = empService.page(page, wrapper);
 
@@ -66,7 +66,7 @@ public class EmpController {
             }
         } else if (did == 0) {
             //查询没有部门的，插入的时候did应该是0的部门或者为空的部门
-            if (ename == null || ename == "") {
+            if (ename == null || "".equals(ename)) {
                 wrapper.eq("isdel", 0).and(querywrapper -> querywrapper.eq("did", 0).or().isNull("did"));
                 list = empService.page(page);
             } else {
@@ -75,7 +75,7 @@ public class EmpController {
             }
 
         } else {
-            if (ename == null || ename == "") {
+            if (ename == null || "".equals(ename)) {
                 wrapper.eq("did", did).eq("isdel", 0);
                 list = empService.page(page);
             } else {

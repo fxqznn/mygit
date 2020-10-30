@@ -40,7 +40,7 @@ public class DeptController {
     @ResponseBody
     public IPage<Dept> getAllDept(Page<Dept> page, String dname) {
         QueryWrapper<Dept> wrapper = new QueryWrapper<>();
-        if (dname == null || dname == "") {
+        if (dname == null || "".equals(dname)) {
             wrapper.eq("isdel", 0);
             return deptService.page(page, wrapper);
         } else {

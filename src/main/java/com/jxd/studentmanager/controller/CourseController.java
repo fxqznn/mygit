@@ -36,7 +36,7 @@ public class CourseController {
     ITermCourseService termCourseService;
 
     /**
-     * 查询课程信息，返回列表中包含tid
+     * 查询课程信息， 返回列表中包含tid
      * @param tid
      * @return
      */
@@ -109,14 +109,7 @@ public class CourseController {
     @ResponseBody
     public String updateCourseBatch(List<Course> courses){
         boolean flag = false;
-        for(Course course:courses){
-            UpdateWrapper<Course> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("cid",course.getCid());
-            flag = courseService.update(course,updateWrapper);
-            if (!flag){
-                return "修改失败";
-            }
-        }
+        flag = courseService.updateBatchById(courses);
         if (!flag){
             return "修改失败";
         } else {
@@ -126,15 +119,45 @@ public class CourseController {
 
     @RequestMapping(value = "updateCourse",produces = "html/text;charset=utf-8")
     @ResponseBody
-    public String updateCourseBatch(Course course){
+    public String updateCourse(Course course){
         boolean flag = false;
-        UpdateWrapper<Course> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("cid",course.getCid());
-        flag = courseService.update(course,updateWrapper);
+        flag = courseService.updateById(course);
         if (!flag){
             return "修改失败";
         } else {
             return "修改成功";
         }
+    }
+
+    /**
+     * 分页查询所有的课程，根据课程名称进行模糊查询，根据课程类别进行分类查询
+     * 2代表查询全部，其余代表课程类型
+     * @param page
+     * @param type
+     * @param cname
+     * @return
+     */
+    @RequestMapping(value = "getAllCourse")
+    @ResponseBody
+    public IPage<Course> getAllCourse(Page<Course> page, int type, String cname){
+        QueryWrapper<Course> wrapper = new QueryWrapper<>();
+
+        if(type == 2){
+            //查询全部,没有选择课程类别
+            if(cname == null || "".equals(cname)){
+                wrapper.eq("isdel",0);
+            } else {
+                wrapper.like("cname",cname).eq("isdel",0);
+            }
+        } else {
+            //查询对应类别的的课程
+            if(cname == null || "".equals(cname)){
+                wrapper.eq("type",type).eq("isdel",0);
+            } else {
+                wrapper.like("cname",cname).eq("type",type).eq("isdel",0);
+            }
+        }
+
+        return courseService.page(page,wrapper);
     }
 }
