@@ -161,6 +161,12 @@ public class StudentScoreController {
         }
     }
 
+    /**
+     * 根据根据经理工号和成绩类型查询该员工的成绩
+     * @param eid  经理工号
+     * @param type
+     * @return
+     */
     @RequestMapping("/getAllEntity")
     @ResponseBody
     public List<Map<String,Object>> getAllEntity(int eid,int type){

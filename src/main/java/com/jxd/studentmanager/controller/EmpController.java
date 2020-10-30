@@ -252,7 +252,7 @@ public class EmpController {
     /**
      * 根据员工工号和成绩类型查询该员工的成绩
      * @param type  成绩类型 0 ：转正   1：第一年  2：第二年  3：第三年
-     * @param eid
+     * @param eid   经理id
      * @return
      */
     @RequestMapping("/selectScores")
@@ -260,5 +260,7 @@ public class EmpController {
     public List<Map<String,Object>> selectScores(int type,int eid){
         return empService.selectScores(type, eid);
     }
+
+
 
 }
