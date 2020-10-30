@@ -189,7 +189,9 @@ public class StudentScoreController {
     @ResponseBody
     public List<Map<String,Object>> getCourseWithScore(){
         List<Map<String,Object>> courseWithScore = new ArrayList<>();
-        List<Student> studentList = studentService.list();
+        QueryWrapper queryWrapper1 = new QueryWrapper();
+        queryWrapper1.orderByAsc("sid");
+        List<Student> studentList = studentService.list(queryWrapper1);
         List<Course> courseList = courseService.list();
         for (Student student:studentList){
             int sid = student.getSid();
