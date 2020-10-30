@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +35,10 @@ public class StudentScoreController {
     private ITermCourseService termCourseService;
     @Autowired
     private IDeptCourseService deptCourseService;
+    @Autowired
+    private ICourseService courseService;
+
+
 
     /**
      * 通过学生id查询成绩时调用,根据学生的id和查询成绩的类型调用
@@ -165,6 +171,56 @@ public class StudentScoreController {
     @ResponseBody
     public List<Map<String,Object>> getAllEntity(int eid,int type){
         return studentScoreService.getAllEntity(eid,type);
+    }
+
+
+    @RequestMapping("/updateStudentScore")
+    @ResponseBody
+    public String updateStudentScore(StudentScore studentScore){
+        boolean flag = studentScoreService.updateById(studentScore);
+        if (flag){
+            return "success";
+        } else {
+            return "error";
+        }
+    }
+
+    @RequestMapping("/getCourseWithScore")
+    @ResponseBody
+    public List<Map<String,Object>> getCourseWithScore(){
+        List<Map<String,Object>> courseWithScore = new ArrayList<>();
+        List<Student> studentList = studentService.list();
+        List<Course> courseList = courseService.list();
+        for (Student student:studentList){
+            int sid = student.getSid();
+            String sname = student.getSname();
+            String sex = student.getSex();
+            String school = student.getSchool();
+            String address = student.getAddress();
+            insertStudenScoreBySid(sid,-1);
+            Map<String,Object> map = new HashMap<>();
+            for (Course course:courseList){
+                int cid = course.getCid();
+                int type = course.getType();
+                String cname = course.getCname();
+                QueryWrapper queryWrapper = new QueryWrapper();
+                Map<String,Object> map1 = new HashMap<>();
+                map1.put("sid",sid);
+                map1.put("cid",cid);
+                map1.put("type",type);
+                queryWrapper.allEq(map1);
+                List<StudentScore> studentScores= studentScoreService.list(queryWrapper);
+                for (StudentScore studentScore:studentScores){
+                    Double score = studentScore.getScore();
+                    //System.out.println(cname+"\t"+score);
+                    map.put(cname,score);
+                }
+
+            }
+            courseWithScore.add(map);
+        }
+        return courseWithScore;
+
     }
 
 }
