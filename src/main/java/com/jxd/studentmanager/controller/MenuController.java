@@ -30,5 +30,4 @@ public class MenuController {
         return menuService.queryMenuInfo(role);
     }
 
-
 }
