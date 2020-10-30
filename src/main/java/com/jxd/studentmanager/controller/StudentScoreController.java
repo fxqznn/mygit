@@ -170,7 +170,7 @@ public class StudentScoreController {
     /**
      * 根据根据经理工号和成绩类型查询该员工的成绩
      * @param eid  经理工号
-     * @param type
+     * @param type 成绩类型 0 ：转正   1：第一年  2：第二年  3：第三年
      * @return
      */
     @RequestMapping("/getAllEntity")
