@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
  * @Date 2020/10/30
  * @Version 1.0
  */
-public class appraise {
+public class Appraise {
     @TableId(type = IdType.AUTO)
     private int pid;
     private String content;
@@ -18,7 +18,7 @@ public class appraise {
     private int eid;
     private int did;
 
-    public appraise() {
+    public Appraise() {
     }
 
     public int getPid() {
