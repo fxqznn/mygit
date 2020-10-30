@@ -2,6 +2,7 @@ package com.jxd.studentmanager.testmapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.StudentManagerApplication;
 import com.jxd.studentmanager.mapper.IStudentMapper;
 import com.jxd.studentmanager.model.Course;
@@ -118,7 +119,11 @@ public class TestLoginService {
 
     @Test
     public void testSelectCoursesByTid(){
-        System.out.println(courseService.selectCoursesByTid(0).size());;
+        List<Course> coursesAll = courseService.list();
+        List<Course> coursePage = courseService.selectCoursesByTid(1,5,1,2,null);
+        for (Course course:coursePage){
+            System.out.println(course.getCname());
+        }
     }
 
     @Test

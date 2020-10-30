@@ -36,24 +36,23 @@ public class CourseController {
     ITermCourseService termCourseService;
 
     /**
-     * 查询课程信息， 返回列表中包含tid
+     * 查询课程信息，返回列表中包含tid
      * @param tid
      * @return
      */
-    @RequestMapping("/getCourses")
+    @RequestMapping(value = "getCourses",produces = "application/json;charset=utf-8")
     @ResponseBody
-    public IPage<Course> getCoursesBytid(Page<Course> page, int tid){
-        QueryWrapper queryWrapper = new QueryWrapper();
-        IPage<Course> courseIPage = null;
-        if (tid != 0){
-            courseIPage = courseService.page(page);
-        }else {
-            queryWrapper.eq("tid",tid);
-            courseIPage = courseService.page(page,queryWrapper);
-        }
-        return courseIPage;
+    //current当前页码，从1开始  size限制数据条数
+    public IPage<Course> getCoursesByTid(int current,int size, int tid,int isdel, String cname){
+        List<Course> coursesAll = courseService.list();
+        List<Course> coursePage = courseService.selectCoursesByTid(current,size,tid,isdel,cname);
+        Page<Course> page = new Page<>();
+        page.setRecords(coursePage);
+        page.setCurrent(current);
+        page.setSize(size);
+        page.setTotal(coursesAll.size());
+        return page;
     }
-
 
     /**
      * 老师往课程表中批量插入课程

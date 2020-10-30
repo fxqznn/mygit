@@ -75,7 +75,7 @@ public class TermController {
         List<Course> courses = courseService.list(wrapper);
         map.put("courses",courses);
 
-        List<Course> checkedCourses = courseService.selectCoursesByTid(tid);
+        List<Course> checkedCourses = courseService.selectCoursesByTid(0,0,tid,2,null);
         map.put("checkedCourses",checkedCourses);
 
         return map;
@@ -93,7 +93,7 @@ public class TermController {
     public String editTerm(Term term, List<Course> checkCourses){
         boolean flag = termService.updateById(term);
 
-        List<Course> oldCheckedCourses = courseService.selectCoursesByTid(term.getTid());
+        List<Course> oldCheckedCourses = courseService.selectCoursesByTid(0,0,term.getTid(),2,null);
 
         //如果取消选择课程，需要删除学期课程中的信息,
         //旧的选择课程中有，新的没有

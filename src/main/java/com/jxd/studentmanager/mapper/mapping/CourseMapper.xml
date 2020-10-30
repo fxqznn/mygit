@@ -5,8 +5,20 @@
 <mapper namespace="com.jxd.studentmanager.mapper.ICourseMapper">
     <select id="selectCoursesByTid" resultType="Course">
         select c.cid,cname,isdel,type from course c left join termcourse tc on c.cid = tc.cid
-        <if test="tid != null and tid != 0">
-            where tc.tid = #{tid}
+        <where>
+            <if test="cname != null and cname != ''">
+                cname like concat('%',#{cname},'%')
+            </if>
+            <if test="tid != 0">
+                and tc.tid = #{tid}
+            </if>
+            <if test="isdel != 2">
+                and isdel = #{isdel}
+            </if>
+        </where>
+        <if test="pageStart != 0 and pageSize != 0">
+            limit #{pageStart},#{pageSize}
         </if>
+
     </select>
 </mapper>
