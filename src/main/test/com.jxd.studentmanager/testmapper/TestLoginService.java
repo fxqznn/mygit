@@ -5,12 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.StudentManagerApplication;
 import com.jxd.studentmanager.mapper.IStudentMapper;
-import com.jxd.studentmanager.model.Course;
-import com.jxd.studentmanager.model.TermCourse;
-import com.jxd.studentmanager.model.User;
-import com.jxd.studentmanager.service.ICourseService;
-import com.jxd.studentmanager.service.ITermCourseService;
-import com.jxd.studentmanager.service.IUserService;
+import com.jxd.studentmanager.model.*;
+import com.jxd.studentmanager.service.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,6 +34,15 @@ public class TestLoginService {
     @Resource
     private IUserService userService;
 
+    @Resource
+    private ICourseService courseService;
+
+    @Resource
+    private IStudentScoreService studentScoreService;
+
+    @Resource
+    private IStudentService studentService;
+
     @Test
     public void testLogin() {
         String uname = "111";
@@ -55,8 +60,7 @@ public class TestLoginService {
         }
     }
 
-    @Resource
-    private ICourseService courseService;
+
     @Test
     public void testAddCourses(){
         Course course1 = new Course();
@@ -147,5 +151,36 @@ public class TestLoginService {
         } else {
             System.out.println("修改成功");
         }
+    }
+
+    @Test
+    public void getCourseWithScore(){
+        List<Map<String,Object>> courseWithScore = new ArrayList<>();
+        List<Student> studentList = studentService.list();
+        List<Course> courseList = courseService.list();
+        for (Student student:studentList){
+            int sid = student.getSid();
+            Map<String,Object> map = new HashMap<>();
+            for (Course course:courseList){
+                int cid = course.getCid();
+                int type = course.getType();
+                String cname = course.getCname();
+                QueryWrapper queryWrapper = new QueryWrapper();
+                Map<String,Object> map1 = new HashMap<>();
+                map1.put("sid",sid);
+                map1.put("cid",cid);
+                map1.put("type",type);
+                queryWrapper.allEq(map1);
+                List<StudentScore> studentScores= studentScoreService.list(queryWrapper);
+                for (StudentScore studentScore:studentScores){
+                    Double score = studentScore.getScore();
+                    //System.out.println(cname+"\t"+score);
+                    map.put(cname,score);
+                }
+
+            }
+            courseWithScore.add(map);
+        }
+
     }
 }
