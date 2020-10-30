@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="mygit04" />
         <module name="jinqiaostudentmanager" />
         <module name="mygit02" />
         <module name="followSys1" />
@@ -23,6 +24,7 @@
       <module name="mygit01" options="-parameters" />
       <module name="mygit02" options="-parameters" />
       <module name="mygit03" options="-parameters" />
+      <module name="mygit04" options="-parameters" />
     </option>
   </component>
 </project>
