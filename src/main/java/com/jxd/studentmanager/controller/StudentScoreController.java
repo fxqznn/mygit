@@ -185,7 +185,7 @@ public class StudentScoreController {
         }
     }
 
-    @RequestMapping("/getCourseWithScore")
+    @RequestMapping(value = "getCourseWithScore", produces = "application/json;charset=utf-8")
     @ResponseBody
     public List<Map<String,Object>> getCourseWithScore(){
         List<Map<String,Object>> courseWithScore = new ArrayList<>();
@@ -199,6 +199,11 @@ public class StudentScoreController {
             String address = student.getAddress();
             insertStudenScoreBySid(sid,-1);
             Map<String,Object> map = new HashMap<>();
+            map.put("sid",sid);
+            map.put("sname",sname);
+            map.put("sex",sex);
+            map.put("school",school);
+            map.put("address",address);
             for (Course course:courseList){
                 int cid = course.getCid();
                 int type = course.getType();
@@ -213,9 +218,8 @@ public class StudentScoreController {
                 for (StudentScore studentScore:studentScores){
                     Double score = studentScore.getScore();
                     //System.out.println(cname+"\t"+score);
-                    map.put(cname,score);
+                    map.put(Integer.toString(cid),score);
                 }
-
             }
             courseWithScore.add(map);
         }
