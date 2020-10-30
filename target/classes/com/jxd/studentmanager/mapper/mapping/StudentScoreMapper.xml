@@ -46,7 +46,7 @@
     <select id="selectAbilities" resultMap="abilities">
         select t1.*,e.ename from
         (select ss.*,c.cname from studentscore ss left join
-        course c on c.cid=ss.sid where sid = #{sid} and ss.type = #{type}) t1
+        course c on c.cid=ss.cid where sid = #{sid} and ss.type = #{type}) t1
         left join emp e on e.eid = t1.eid
     </select>
 
