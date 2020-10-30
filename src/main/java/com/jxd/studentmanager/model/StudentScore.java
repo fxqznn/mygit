@@ -18,10 +18,19 @@ public class StudentScore {
 
     private int sid;
     private int cid;
+    private String sname;
     private double score; //0-5
     private int type;
     private int eid;//打分人
     private int did;//打分时所处部门
+
+    public String getSname() {
+        return sname;
+    }
+
+    public void setSname(String sname) {
+        this.sname = sname;
+    }
 
     public int getSsid() {
         return ssid;
