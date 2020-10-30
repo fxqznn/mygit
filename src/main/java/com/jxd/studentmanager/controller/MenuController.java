@@ -26,7 +26,7 @@ public class MenuController {
      */
     @RequestMapping("/getMenu/{role}")
     @ResponseBody
-    public List<Map<String, Object>> getAllDeptByLike(@PathVariable("userid") int role) {
+    public List<Map<String, Object>> getAllDeptByLike(@PathVariable("role") int role) {
         return menuService.queryMenuInfo(role);
     }
 

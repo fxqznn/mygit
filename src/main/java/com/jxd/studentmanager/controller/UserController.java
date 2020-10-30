@@ -44,73 +44,76 @@ public class UserController {
 
     @RequestMapping("/login/{uname}/{pwd}")
     @ResponseBody
-    public User login(@PathVariable("uname") String uname, @PathVariable("pwd") String pwd){
-        Map<String,Object> map = new HashMap<>();
-        map.put("uname",uname);
-        map.put("pwd",pwd);
+    public User login(@PathVariable("uname") String uname, @PathVariable("pwd") String pwd) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("uname", uname);
+        map.put("pwd", pwd);
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.allEq(map,true);
-        User user = userService.getOne(queryWrapper,true);
-        if (user != null){
+        queryWrapper.allEq(map, true);
+        User user = userService.getOne(queryWrapper, true);
+        if (user != null) {
             return user;
-        }else {
+        } else {
             return null;
         }
     }
 
     /**
      * 分页查询所有的账户信息
-     * @param page current-当前页 size-条数
+     *
+     * @param page  current-当前页 size-条数
      * @param role  角色
      * @param uname 工号模糊查询
      * @return
      */
     @RequestMapping(value = "getAllUser")
     @ResponseBody
-    public IPage<User> getAllUser(Page<User> page, int role, String uname){
+    public IPage<User> getAllUser(Page<User> page, int role, String uname) {
         IPage<User> list = null;
 
         QueryWrapper<User> wrapper = new QueryWrapper<>();
 
-        if(role == -1){
-            if(uname == null || "".equals(uname)){
+        if (role == -1) {
+            if (uname == null || "".equals(uname)) {
                 list = userService.page(page);
             } else {
-                wrapper.likeRight("ename",uname);
-                list = userService.page(page,wrapper);
+                wrapper.likeRight("ename", uname);
+                list = userService.page(page, wrapper);
             }
         } else {
-            if(uname == null || "".equals(uname)){
-                wrapper.eq("role",role);
+            if (uname == null || "".equals(uname)) {
+                wrapper.eq("role", role);
             } else {
-                wrapper.likeRight("uname",uname).eq("role",role);
+                wrapper.likeRight("uname", uname).eq("role", role);
             }
-            list = userService.page(page,wrapper);
+            list = userService.page(page, wrapper);
         }
         return list;
     }
 
     /**
      * 获得一个用户的信息
+     *
      * @param uid
      * @return
      */
     @RequestMapping(value = "getUserById")
     @ResponseBody
-    public User getUserById(int uid){
+    public User getUserById(int uid) {
         return userService.getById(uid);
     }
 
     /**
      * 通过姓名和角色创建用户
      * 先创建员工信息，获取员工的id，在添加账号信息，如果是学生的话，需要为学生添加一个账户
+     *
      * @param name
      * @param role
      * @return
      */
     @RequestMapping(value = "addUser")
     @ResponseBody
-    public String addUser(String name, int role){
+    public String addUser(String name, int role) {
         Emp emp = new Emp();
         emp.setEname(name);
         boolean flag = empService.save(emp);
@@ -120,7 +123,7 @@ public class UserController {
         user.setRole(role);
         flag = userService.save(user);
 
-        if(role == 3){
+        if (role == 3) {
             //学生
             Student student = new Student();
             student.setSname(name);
@@ -131,7 +134,7 @@ public class UserController {
             flag = empService.updateById(emp);
         }
 
-        if(flag){
+        if (flag) {
             return "success";
         } else {
             return "fail";
@@ -140,14 +143,15 @@ public class UserController {
 
     /**
      * 修改账号信息
+     *
      * @param user
      * @return
      */
     @RequestMapping(value = "editUser")
     @ResponseBody
-    public String editUser(User user){
+    public String editUser(User user) {
         boolean flag = userService.updateById(user);
-        if(flag){
+        if (flag) {
             return "success";
         } else {
             return "fail";
@@ -156,20 +160,21 @@ public class UserController {
 
     /**
      * 设置密码为默认密码
+     *
      * @param uid
      * @return
      */
     @RequestMapping(value = "setDefaultPwd")
     @ResponseBody
-    public String setDefaultPwd(int uid){
+    public String setDefaultPwd(int uid) {
         User user = userService.getById(uid);
 
         UpdateWrapper<User> wrapper = new UpdateWrapper<>();
         wrapper.setSql("pwd = default");
 
-        boolean flag = userService.update(user,wrapper);
+        boolean flag = userService.update(user, wrapper);
 
-        if(flag){
+        if (flag) {
             return "success";
         } else {
             return "fail";
@@ -178,38 +183,39 @@ public class UserController {
 
     /**
      * 删除账号吧，并且根据账号所在角色进行级联删除
+     *
      * @param uid
      * @return
      */
     @RequestMapping(value = "delUserByIdCascade")
     @ResponseBody
-    public String delUserWithEmp(int uid){
+    public String delUserWithEmp(int uid) {
         boolean flag = false;
 
         User user = userService.getById(uid);
 
-        if(user.getRole() == 3){
+        if (user.getRole() == 3) {
             //学生账号级联删除
             QueryWrapper<Student> wrapper = new QueryWrapper<>();
-            wrapper.eq("eid",user.getUname());
+            wrapper.eq("eid", user.getUname());
             Student student = studentService.getOne(wrapper);
 
             UpdateWrapper<StudentScore> wrapper1 = new UpdateWrapper<>();
-            wrapper1.eq("sid",student.getSid());
+            wrapper1.eq("sid", student.getSid());
             studentScoreService.remove(wrapper1);
 
             studentService.removeById(student.getSid());
             flag = empService.removeById(user.getUname());
-        } else if (user.getRole() == 0){
+        } else if (user.getRole() == 0) {
             //管理员账号级联删除
             empService.removeById(user.getUname());
         } else {
             //部门经理或者老师账号级联删除
             QueryWrapper<StudentScore> wrapper1 = new QueryWrapper<>();
-            wrapper1.eq("eid",user.getUname());
+            wrapper1.eq("eid", user.getUname());
             int num = studentScoreService.count(wrapper1);
 
-            if(num == 0){
+            if (num == 0) {
                 flag = empService.removeById(user.getUname());
             } else {
                 Emp emp = empService.getById(user.getUname());
@@ -220,7 +226,7 @@ public class UserController {
 
         flag = userService.removeById(uid);
 
-        if(flag){
+        if (flag) {
             return "success";
         } else {
             return "fail";
@@ -229,9 +235,9 @@ public class UserController {
 
     @RequestMapping(value = "delUserById")
     @ResponseBody
-    public String delUserById(int uid){
+    public String delUserById(int uid) {
         boolean flag = userService.removeById(uid);
-        if(flag){
+        if (flag) {
             return "success";
         } else {
             return "fail";
@@ -240,10 +246,10 @@ public class UserController {
 
     @RequestMapping(value = "delUsersByIdsCascade")
     @ResponseBody
-    public String delUsersByIdsCascade(int[] uids){
-        for(int uid : uids){
+    public String delUsersByIdsCascade(int[] uids) {
+        for (int uid : uids) {
             String result = delUserById(uid);
-            if(result.equals("fail")){
+            if (result.equals("fail")) {
                 return "fail";
             }
         }
@@ -252,17 +258,18 @@ public class UserController {
 
     @RequestMapping(value = "delUsersByIds")
     @ResponseBody
-    public String delUsersByIds(int[] uids){
+    public String delUsersByIds(int[] uids) {
         List<Integer> list = new ArrayList<>();
-        for(int uid : uids){
+        for (int uid : uids) {
             list.add(uid);
         }
         boolean flag = userService.removeByIds(list);
-        if(flag){
+        if (flag) {
             return "success";
         } else {
             return "error";
         }
     }
+
 
 }

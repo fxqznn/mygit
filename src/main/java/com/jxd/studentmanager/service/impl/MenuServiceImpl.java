@@ -43,8 +43,8 @@ public class MenuServiceImpl extends ServiceImpl<IMenuMapper, Menu> implements I
         //为根菜单设置子菜单，getClild是递归调用的
         for (Map<String, Object> nav : rootMenu) {
             /* 获取根节点下的所有子节点 使用getChild方法*/
-            String id = String.valueOf(nav.get("id"));
-            List<Map<String, Object>> childList = getChild(id, allMenu);
+            String mid = String.valueOf(nav.get("mid"));
+            List<Map<String, Object>> childList = getChild(mid, allMenu);
 //	        nav.setChildren(childList);//给根节点设置子节点
             nav.put("children", childList);
         }
@@ -71,7 +71,7 @@ public class MenuServiceImpl extends ServiceImpl<IMenuMapper, Menu> implements I
         }
         //递归
         for (Map<String, Object> nav : childList) {
-            String tempId = String.valueOf(nav.get("id"));
+            String tempId = String.valueOf(nav.get("mid"));
             //nav.setChildren(,getChild(tempId, allMenu));
             nav.put("child", getChild(tempId, allMenu));
         }
