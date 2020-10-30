@@ -1,10 +1,15 @@
 package com.jxd.studentmanager.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jxd.studentmanager.model.Course;
 import com.jxd.studentmanager.model.Dept;
+import com.jxd.studentmanager.model.DeptCourse;
 import com.jxd.studentmanager.model.Emp;
+import com.jxd.studentmanager.service.ICourseService;
+import com.jxd.studentmanager.service.IDeptCourseService;
 import com.jxd.studentmanager.service.IDeptService;
 import com.jxd.studentmanager.service.IEmpService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +35,10 @@ public class DeptController {
     private IDeptService deptService;
     @Autowired
     private IEmpService empService;
+    @Autowired
+    private ICourseService courseService;
+    @Autowired
+    private IDeptCourseService deptCourseService;
 
     /**
      * 分页加部门名称模糊查询
@@ -51,14 +62,34 @@ public class DeptController {
 
     @RequestMapping(value = "getDeptById")
     @ResponseBody
-    public Dept getDeptById(int did) {
-        return deptService.getById(did);
+    public Map<String, Object> getDeptById(int did) {
+        Map<String,Object> map = new HashMap<>();
+
+        Dept dept = deptService.getById(did);
+        map.put("dept",dept);
+
+        QueryWrapper<Course> wrapper = new QueryWrapper<>();
+        wrapper.eq("isdel",0).ne("type",0);
+        List<Course> courses = courseService.list(wrapper);
+        map.put("courses",courses);
+
+        List<Course> checkedCourses = courseService.selectCoursesByDid(did);
+        map.put("checkedCourses",checkedCourses);
+
+        return map;
     }
 
     @RequestMapping(value = "addDept")
     @ResponseBody
-    public String addDept(Dept dept) {
+    public String addDept(Dept dept, List<Course> courses) {
         boolean flag = deptService.save(dept);
+
+        for(Course course : courses) {
+            DeptCourse deptCourse = new DeptCourse();
+            deptCourse.setDid(dept.getDid());
+            deptCourse.setCid(course.getCid());
+            deptCourseService.save(deptCourse);
+        }
         if (flag) {
             return "success";
         } else {
@@ -68,8 +99,47 @@ public class DeptController {
 
     @RequestMapping(value = "editDept")
     @ResponseBody
-    public String editDept(Dept dept) {
+    public String editDept(Dept dept, List<Course> checkCourses) {
         boolean flag = deptService.updateById(dept);
+
+        List<Course> oldCheckedCourses = courseService.selectCoursesByDid(dept.getDid());
+
+        //如果取消选择课程，需要删除学期课程中的信息,
+        //旧的选择课程中有，新的没有
+        for(Course oldCourse : oldCheckedCourses){
+            boolean isexist = false;
+            for(Course newCourse : checkCourses){
+                if(newCourse.getCid() == oldCourse.getCid()){
+                    isexist = true;
+                    break;
+                }
+            }
+            if(isexist == false){
+                UpdateWrapper<DeptCourse> wrapper = new UpdateWrapper<>();
+                wrapper.eq("did",dept.getDid()).eq("cid",oldCourse.getCid());
+                deptCourseService.remove(wrapper);
+            }
+        }
+
+        //新添加课程，需要在学期课程中添加信息
+        //新的选择课程中有，旧的没有
+        for(Course newCourse : checkCourses){
+            boolean isexist = false;
+            for(Course oldCourse : oldCheckedCourses){
+                if(newCourse.getCid() == oldCourse.getCid()){
+                    isexist = true;
+                    break;
+                }
+            }
+            if(isexist == false) {
+                DeptCourse deptCourse = new DeptCourse();
+                deptCourse.setDid(dept.getDid());
+                deptCourse.setCid(newCourse.getCid());
+                deptCourseService.save(deptCourse);
+            }
+        }
+
+
         if (flag) {
             return "success";
         } else {
