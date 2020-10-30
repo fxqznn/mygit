@@ -28,4 +28,9 @@ public class CourseServiceImpl extends ServiceImpl<ICourseMapper, Course> implem
         int pageStart = pageSize * (page - 1);
         return courseMapper.selectCoursesByTid(pageStart,pageSize,tid,isdel,cname);
     }
+
+    @Override
+    public List<Course> selectCoursesByDid(int did) {
+        return courseMapper.selectCoursesByDid(did);
+    }
 }

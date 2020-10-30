@@ -3,4 +3,28 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--接口的全路径，用于关联dao层接口-->
 <mapper namespace="com.jxd.studentmanager.mapper.IEmpMapper">
+
+    <resultMap id="Emp" type="java.util.Map">
+        <id property="eid" column="eid"/>
+        <result property="ename" column="ename"/>
+        <result property="dname" column="dname"/>
+        <result property="job" column="job"/>
+    </resultMap>
+    <resultMap id="Score" type="java.util.Map">
+        <result property="cname" column="cname"/>
+        <result property="score" column="score"/>
+    </resultMap>
+
+    <select id="selectEmp" resultMap="Emp">
+        select eid,ename,dname,job from
+        (select e.*,dname from emp e left join dept d on e.did = d.did) t1
+        where did = (select did from emp where eid = #{eid}) and eid != #{eid}
+    </select>
+
+    <select id="selectScores" resultMap="Score">
+        select cname,score from (select ss.*,c.cname from studentscore ss left join
+        course c on c.cid=ss.cid where  ss.type = #{type}) t1 where sid =
+        (select sid from student s where s.eid = #{eid})
+    </select>
+
 </mapper>

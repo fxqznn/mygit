@@ -4,11 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jxd.studentmanager.model.Course;
-import com.jxd.studentmanager.model.Term;
-import com.jxd.studentmanager.model.TermCourse;
-import com.jxd.studentmanager.model.User;
+import com.jxd.studentmanager.model.*;
 import com.jxd.studentmanager.service.ICourseService;
+import com.jxd.studentmanager.service.IDeptCourseService;
 import com.jxd.studentmanager.service.ITermCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +32,9 @@ public class CourseController {
 
     @Autowired
     ITermCourseService termCourseService;
+
+    @Autowired
+    private IDeptCourseService deptCourseService;
 
     /**
      * 查询课程信息，返回列表中包含tid
@@ -158,5 +159,58 @@ public class CourseController {
         }
 
         return courseService.page(page,wrapper);
+    }
+
+    @RequestMapping(value = "getCourseById")
+    @ResponseBody
+    public Course getCourse(int cid){
+        return courseService.getById(cid);
+    }
+
+    @RequestMapping(value = "addCourse")
+    @ResponseBody
+    public String addCourse(Course course){
+        boolean flag = courseService.save(course);
+        if(flag){
+            return "success";
+        } else {
+            return "true";
+        }
+    }
+
+    @RequestMapping(value = "delCourseById")
+    @ResponseBody
+    public String delCourseById(int cid){
+        boolean flag = false;
+
+        QueryWrapper<TermCourse> wrapper = new QueryWrapper<>();
+        wrapper.eq("cid",cid);
+        int num = termCourseService.count(wrapper);
+        QueryWrapper<DeptCourse> wrapper1 = new QueryWrapper<>();
+        wrapper1.eq("cid",cid);
+        int num1 = deptCourseService.count(wrapper1);
+
+        if(num > 0 || num1 > 0){
+            Course course = courseService.getById(cid);
+            course.setIsdel(1);
+            flag = courseService.updateById(course);
+        }else {
+            flag = courseService.removeById(cid);
+        }
+
+        if(flag){
+            return "success";
+        } else {
+            return "true";
+        }
+    }
+
+    @RequestMapping(value = "delCoursesByIds")
+    @ResponseBody
+    public String delCoursesByIds(int[] cids){
+        for(int cid : cids){
+            delCourseById(cid);
+        }
+        return "success";
     }
 }

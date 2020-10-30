@@ -71,7 +71,7 @@ public class TermController {
         map.put("term",term);
 
         QueryWrapper<Course> wrapper = new QueryWrapper<>();
-        wrapper.eq("isdel",0);
+        wrapper.eq("isdel",0).ne("type",1);
         List<Course> courses = courseService.list(wrapper);
         map.put("courses",courses);
 
