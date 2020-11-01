@@ -238,29 +238,5 @@ public class EmpController {
         }
     }
 
-    /**
-     * 根据经理工号查询该部门的员工信息
-     * @param eid
-     * @return
-     */
-    @RequestMapping("/selectAllEmp1")
-    @ResponseBody
-    public List<Map<String,Object>> selectAllEmp(int eid){
-        return empService.selectEmp(eid);
-    }
-
-    /**
-     * 根据员工工号和成绩类型查询该员工的成绩
-     * @param type  成绩类型 0 ：转正   1：第一年  2：第二年  3：第三年
-     * @param eid   经理id
-     * @return
-     */
-    @RequestMapping("/selectScores")
-    @ResponseBody
-    public List<Map<String,Object>> selectScores(int type,int eid){
-        return empService.selectScores(type, eid);
-    }
-
-
 
 }

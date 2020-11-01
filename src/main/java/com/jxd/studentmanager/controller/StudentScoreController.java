@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jxd.studentmanager.mapper.IStudentScoreMapper;
 import com.jxd.studentmanager.model.*;
 import com.jxd.studentmanager.service.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
@@ -168,7 +170,7 @@ public class StudentScoreController {
     }
 
     /**
-     * 根据根据经理工号和成绩类型查询该员工的成绩
+     * 根据根据经理工号和成绩类型动态查询表头
      * @param eid  经理工号
      * @param type 成绩类型 0 ：转正   1：第一年  2：第二年  3：第三年
      * @return
@@ -176,7 +178,16 @@ public class StudentScoreController {
     @RequestMapping("/getAllEntity")
     @ResponseBody
     public List<Map<String,Object>> getAllEntity(int eid,int type){
-        return studentScoreService.getAllEntity(eid,type);
+        List<Map<String,Object>> list = new ArrayList<>();
+        List<Course> courseList = studentScoreService.getAllEntity(eid,type);
+        for (Course course : courseList){
+            String cid = Integer.toString(course.getCid());
+            Map<String,Object> map = new HashMap<>();
+            map.put("cid",cid);
+            map.put("cname",course.getCname());
+            list.add(map);
+    }
+        return list;
     }
 
 
@@ -233,6 +244,27 @@ public class StudentScoreController {
         }
         return courseWithScore;
 
+    }
+
+    @RequestMapping("/showAbilityScore")
+    @ResponseBody
+    public List<Map<Object,Object>> showAs(@RequestParam("eid") int eid,int type){
+        List<Map<Object,Object>> courseWithScore = new ArrayList<>();
+        List<Emp> empList = empService.selectEmp(eid);
+
+        for (Emp emp: empList){
+            Map<Object,Object> map = new HashMap<>();
+            List<StudentScore> scoreList = empService.selectScores(type,emp.getEid());
+            map.put("eid",emp.getEid());
+            map.put("ename",emp.getEname());
+            map.put("job",emp.getJob());
+            for (StudentScore ss : scoreList){
+                map.put(Integer.toString(ss.getCid()),Double.toString(ss.getScore()));
+
+            }
+            courseWithScore.add(map);
+        }
+        return courseWithScore;
     }
 
 }
