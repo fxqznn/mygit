@@ -1,6 +1,7 @@
 package com.jxd.studentmanager.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jxd.studentmanager.model.Course;
 import com.jxd.studentmanager.model.StudentScore;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,7 +15,7 @@ public interface IStudentScoreService extends IService<StudentScore> {
 
     boolean updateEmpScore(int cid,double grade,int sid);
 
-    List<Map<String,Object>> getAllEntity(int eid,int type);
+    List<Course> getAllEntity(int eid, int type);
 
 
 }

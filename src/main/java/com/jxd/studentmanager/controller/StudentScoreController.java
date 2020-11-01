@@ -4,11 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jxd.studentmanager.mapper.IStudentScoreMapper;
 import com.jxd.studentmanager.model.*;
 import com.jxd.studentmanager.service.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +37,10 @@ public class StudentScoreController {
     private ITermCourseService termCourseService;
     @Autowired
     private IDeptCourseService deptCourseService;
+    @Autowired
+    private ICourseService courseService;
+
+
 
     /**
      * 通过学生id查询成绩时调用,根据学生的id和查询成绩的类型调用
@@ -161,10 +169,102 @@ public class StudentScoreController {
         }
     }
 
+    /**
+     * 根据根据经理工号和成绩类型动态查询表头
+     * @param eid  经理工号
+     * @param type 成绩类型 0 ：转正   1：第一年  2：第二年  3：第三年
+     * @return
+     */
     @RequestMapping("/getAllEntity")
     @ResponseBody
     public List<Map<String,Object>> getAllEntity(int eid,int type){
-        return studentScoreService.getAllEntity(eid,type);
+        List<Map<String,Object>> list = new ArrayList<>();
+        List<Course> courseList = studentScoreService.getAllEntity(eid,type);
+        for (Course course : courseList){
+            String cid = Integer.toString(course.getCid());
+            Map<String,Object> map = new HashMap<>();
+            map.put("cid",cid);
+            map.put("cname",course.getCname());
+            list.add(map);
+    }
+        return list;
+    }
+
+
+    @RequestMapping("/updateStudentScore")
+    @ResponseBody
+    public String updateStudentScore(StudentScore studentScore){
+        boolean flag = studentScoreService.updateById(studentScore);
+        if (flag){
+            return "success";
+        } else {
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "getCourseWithScore", produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public List<Map<String,Object>> getCourseWithScore(){
+        List<Map<String,Object>> courseWithScore = new ArrayList<>();
+        QueryWrapper queryWrapper1 = new QueryWrapper();
+        queryWrapper1.orderByAsc("sid");
+        List<Student> studentList = studentService.list(queryWrapper1);
+        List<Course> courseList = courseService.list();
+        for (Student student:studentList){
+            int sid = student.getSid();
+            String sname = student.getSname();
+            String sex = student.getSex();
+            String school = student.getSchool();
+            String address = student.getAddress();
+            insertStudenScoreBySid(sid,-1);
+            Map<String,Object> map = new HashMap<>();
+            map.put("sid",sid);
+            map.put("sname",sname);
+            map.put("sex",sex);
+            map.put("school",school);
+            map.put("address",address);
+            for (Course course:courseList){
+                int cid = course.getCid();
+                int type = course.getType();
+                String cname = course.getCname();
+                QueryWrapper queryWrapper = new QueryWrapper();
+                Map<String,Object> map1 = new HashMap<>();
+                map1.put("sid",sid);
+                map1.put("cid",cid);
+                map1.put("type",type);
+                queryWrapper.allEq(map1);
+                List<StudentScore> studentScores= studentScoreService.list(queryWrapper);
+                for (StudentScore studentScore:studentScores){
+                    Double score = studentScore.getScore();
+                    //System.out.println(cname+"\t"+score);
+                    map.put(Integer.toString(cid),score);
+                }
+            }
+            courseWithScore.add(map);
+        }
+        return courseWithScore;
+
+    }
+
+    @RequestMapping("/showAbilityScore")
+    @ResponseBody
+    public List<Map<Object,Object>> showAs(@RequestParam("eid") int eid,int type){
+        List<Map<Object,Object>> courseWithScore = new ArrayList<>();
+        List<Emp> empList = empService.selectEmp(eid);
+
+        for (Emp emp: empList){
+            Map<Object,Object> map = new HashMap<>();
+            List<StudentScore> scoreList = empService.selectScores(type,emp.getEid());
+            map.put("eid",emp.getEid());
+            map.put("ename",emp.getEname());
+            map.put("job",emp.getJob());
+            for (StudentScore ss : scoreList){
+                map.put(Integer.toString(ss.getCid()),Double.toString(ss.getScore()));
+
+            }
+            courseWithScore.add(map);
+        }
+        return courseWithScore;
     }
 
 }

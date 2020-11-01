@@ -2,6 +2,7 @@ package com.jxd.studentmanager.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jxd.studentmanager.mapper.IStudentScoreMapper;
+import com.jxd.studentmanager.model.Course;
 import com.jxd.studentmanager.model.StudentScore;
 import com.jxd.studentmanager.service.IStudentScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     }
 
     @Override
-    public List<Map<String, Object>> getAllEntity(int eid,int type) {
+    public List<Course> getAllEntity(int eid, int type) {
         return studentScoreMapper.getAllEntity(eid,type);
     }
 
