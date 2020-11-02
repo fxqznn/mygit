@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface IEmpMapper extends BaseMapper<Emp> {
-    List<Emp> selectEmp(@Param("eid") int eid);
+    List<Emp> selectEmp(@Param("eid") int eid,@Param("ename") String ename);
 
     List<StudentScore> selectScores(@Param("type") int type, @Param("eid") int eid);
+
+    int getSid(@Param("eid") int eid);
 }

@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface IMenuMapper extends BaseMapper<Menu> {
-    public List<Map<String, Object>> queryAllMenu(int role);
+     List<Map<String, Object>> queryAllMenu(int role);
 }

@@ -26,12 +26,15 @@ public class EmpServiceImpl extends ServiceImpl<IEmpMapper, Emp> implements IEmp
     private IEmpMapper iem;
 
     @Override
-    public List<Emp> selectEmp(int eid) {
-        return iem.selectEmp(eid);
+    public List<Emp> selectEmp(int eid,String ename) {
+        return iem.selectEmp(eid,ename);
     }
 
     @Override
     public List<StudentScore> selectScores(int type, int eid) {
         return iem.selectScores(type, eid);
     }
+
+    @Override
+    public int getSid(int eid){return iem.getSid(eid);}
 }

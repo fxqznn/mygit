@@ -44,5 +44,8 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
         return studentScoreMapper.getAllEntity(eid,type);
     }
 
-
+    @Override
+    public int insertSs(StudentScore ss){
+        return studentScoreMapper.insertSs(ss);
+    }
 }

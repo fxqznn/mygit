@@ -246,12 +246,11 @@ public class StudentScoreController {
 
     }
 
-    @RequestMapping("/showAbilityScore")
+    @RequestMapping(value = "showAbilityScore", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public List<Map<Object,Object>> showAs(@RequestParam("eid") int eid,int type){
+    public List<Map<Object,Object>> showAs(@RequestParam("eid") int eid,int type,@RequestParam("ename") String ename){
         List<Map<Object,Object>> courseWithScore = new ArrayList<>();
-        List<Emp> empList = empService.selectEmp(eid);
-
+        List<Emp> empList = empService.selectEmp(eid,ename);
         for (Emp emp: empList){
             Map<Object,Object> map = new HashMap<>();
             List<StudentScore> scoreList = empService.selectScores(type,emp.getEid());
@@ -259,8 +258,16 @@ public class StudentScoreController {
             map.put("ename",emp.getEname());
             map.put("job",emp.getJob());
             for (StudentScore ss : scoreList){
+                if (scoreList.size()==0){
+                    StudentScore ss1 = new StudentScore();
+                    ss1.setCid(ss.getCid());
+                    ss1.setSid(empService.getSid(ss.getEid()));
+                    ss1.setType(type);
+                    ss1.setEid(eid);
+                    ss1.setScore(-1);
+                    studentScoreService.insertSs(ss1);
+                }
                 map.put(Integer.toString(ss.getCid()),Double.toString(ss.getScore()));
-
             }
             courseWithScore.add(map);
         }

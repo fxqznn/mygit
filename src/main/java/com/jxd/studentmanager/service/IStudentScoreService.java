@@ -17,5 +17,5 @@ public interface IStudentScoreService extends IService<StudentScore> {
 
     List<Course> getAllEntity(int eid, int type);
 
-
+    int insertSs(StudentScore ss);
 }

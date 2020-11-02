@@ -63,4 +63,9 @@
         left join emp e on e.eid = t1.eid where e.eid = #{eid}
     </select>
 
+    <insert id="insertSs" parameterType="com.jxd.studentmanager.model.StudentScore">
+        insert into studentscore(ssid,sid,cid,score,type,eid)
+        values(#{ssid},#{sid},#{cid},#{score},#{type},#{eid})
+    </insert>
+
 </mapper>
