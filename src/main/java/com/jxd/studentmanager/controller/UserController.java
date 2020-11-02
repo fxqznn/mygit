@@ -200,11 +200,14 @@ public class UserController {
             wrapper.eq("eid", user.getUname());
             Student student = studentService.getOne(wrapper);
 
-            UpdateWrapper<StudentScore> wrapper1 = new UpdateWrapper<>();
-            wrapper1.eq("sid", student.getSid());
-            studentScoreService.remove(wrapper1);
+            if(student != null){
+                UpdateWrapper<StudentScore> wrapper1 = new UpdateWrapper<>();
+                wrapper1.eq("sid", student.getSid());
+                studentScoreService.remove(wrapper1);
 
-            studentService.removeById(student.getSid());
+                studentService.removeById(student.getSid());
+            }
+
             flag = empService.removeById(user.getUname());
         } else if (user.getRole() == 0) {
             //管理员账号级联删除
