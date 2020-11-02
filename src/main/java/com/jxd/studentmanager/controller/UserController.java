@@ -158,6 +158,19 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/changePass/{uid}/{pass}")
+    @ResponseBody
+    public String changePass(@PathVariable("uid") int uid, @PathVariable("pass") String pass) {
+        User user = userService.getById(uid);
+        user.setPwd(pass);
+        boolean flag = userService.updateById(user);
+        if (flag) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
     /**
      * 设置密码为默认密码
      *
