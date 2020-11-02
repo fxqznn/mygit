@@ -2,6 +2,7 @@ package com.jxd.studentmanager.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
  * @ClassName appraise
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
  * @Date 2020/10/30
  * @Version 1.0
  */
+@TableName("appraise")
 public class Appraise {
     @TableId(type = IdType.AUTO)
     private int pid;

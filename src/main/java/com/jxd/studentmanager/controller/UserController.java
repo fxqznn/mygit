@@ -158,6 +158,19 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/changePass/{uid}/{pass}")
+    @ResponseBody
+    public String changePass(@PathVariable("uid") int uid, @PathVariable("pass") String pass) {
+        User user = userService.getById(uid);
+        user.setPwd(pass);
+        boolean flag = userService.updateById(user);
+        if (flag) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
     /**
      * 设置密码为默认密码
      *
@@ -200,11 +213,14 @@ public class UserController {
             wrapper.eq("eid", user.getUname());
             Student student = studentService.getOne(wrapper);
 
-            UpdateWrapper<StudentScore> wrapper1 = new UpdateWrapper<>();
-            wrapper1.eq("sid", student.getSid());
-            studentScoreService.remove(wrapper1);
+            if(student != null){
+                UpdateWrapper<StudentScore> wrapper1 = new UpdateWrapper<>();
+                wrapper1.eq("sid", student.getSid());
+                studentScoreService.remove(wrapper1);
 
-            studentService.removeById(student.getSid());
+                studentService.removeById(student.getSid());
+            }
+
             flag = empService.removeById(user.getUname());
         } else if (user.getRole() == 0) {
             //管理员账号级联删除

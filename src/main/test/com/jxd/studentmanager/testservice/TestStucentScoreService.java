@@ -2,8 +2,7 @@ package com.jxd.studentmanager.testservice;
 
 
 import com.jxd.studentmanager.StudentManagerApplication;
-import com.jxd.studentmanager.controller.StudentScoreController;
-import com.jxd.studentmanager.model.StudentScore;
+import com.jxd.studentmanager.model.Course;
 import com.jxd.studentmanager.service.IStudentScoreService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,13 +46,9 @@ public class TestStucentScoreService {
     }
 
     @Test
-    public void insertSs(){
-        StudentScore ss = new StudentScore();
-        ss.setSsid(12);
-        int num = scoreService.insertSs(ss);
-        System.out.println(num);
+    public void getAllEntity(){
+        List<Course> list = scoreService.getAllEntity(1,0);
+        System.out.println(list.size());
     }
-
-
 
 }

@@ -7,6 +7,7 @@ import com.jxd.studentmanager.service.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -147,15 +148,15 @@ public class StudentScoreController {
     }
 
 
-    @RequestMapping("/getScoreCourses")
+    @RequestMapping("/getScoreCourses/{sid}")
     @ResponseBody
-    public List<Map<String, Object>> getScoreCourses(int sid) {
+    public List<Map<String, Object>> getScoreCourses(@PathVariable("sid") int sid) {
         return studentScoreService.selectCourses(sid);
     }
 
-    @RequestMapping("/getScoreAbilities")
+    @RequestMapping("/getScoreAbilities/{sid}/{type}")
     @ResponseBody
-    public List<Map<String, Object>> getScoreAbilities(int sid, int type) {
+    public List<Map<String, Object>> getScoreAbilities(@PathVariable("sid") int sid,@PathVariable("type") int type) {
         return studentScoreService.selectAbilities(sid,type);
     }
 
