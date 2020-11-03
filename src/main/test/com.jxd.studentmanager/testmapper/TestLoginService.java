@@ -45,8 +45,7 @@ public class TestLoginService {
     @Resource
     private IStudentService studentService;
 
-    @Autowired
-    private ICourseMapper courseMapper;
+
 
 
     @Test
