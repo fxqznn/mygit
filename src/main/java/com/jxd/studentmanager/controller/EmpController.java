@@ -49,7 +49,7 @@ public class EmpController {
      */
     @RequestMapping(value = "getAllEmp" , produces = "application/json;charset=utf-8")
     @ResponseBody
-    public IPage<Emp> getAllEmp(Page<Emp> page, String ename, int did) {
+    public IPage<Emp> getAllEmp(Page<Emp> page, String ename, int did, int isdel) {
 
         IPage<Emp> list = null;
         QueryWrapper<Emp> wrapper = new QueryWrapper<>();
@@ -57,18 +57,18 @@ public class EmpController {
         if (did == -1) {
             //查询全部
             if (ename == null || "".equals(ename)) {
-                wrapper.eq("isdel", 0);
+                wrapper.eq("isdel", isdel);
                 list = empService.page(page, wrapper);
 
             } else {
-                wrapper.like("ename", ename).eq("isdel", 0);
+                wrapper.like("ename", ename).eq("isdel", isdel);
                 list = empService.page(page, wrapper);
             }
         } else if (did == 0) {
             //查询没有部门的，插入的时候did应该是0的部门或者为空的部门
             if (ename == null || "".equals(ename)) {
-                wrapper.eq("isdel", 0).and(querywrapper -> querywrapper.eq("did", 0).or().isNull("did"));
-                list = empService.page(page);
+                wrapper.eq("isdel", isdel).and(querywrapper -> querywrapper.eq("did", 0).or().isNull("did"));
+                list = empService.page(page,wrapper);
             } else {
                 wrapper.like("ename", ename).eq("isdel", 0).and(querywrapper -> querywrapper.eq("did", 0).or().isNull("did"));
                 list = empService.page(page, wrapper);
@@ -76,10 +76,10 @@ public class EmpController {
 
         } else {
             if (ename == null || "".equals(ename)) {
-                wrapper.eq("did", did).eq("isdel", 0);
-                list = empService.page(page);
+                wrapper.eq("did", did).eq("isdel", isdel);
+                list = empService.page(page,wrapper);
             } else {
-                wrapper.like("ename", ename).eq("did", did).eq("isdel", 0);
+                wrapper.like("ename", ename).eq("did", did).eq("isdel", isdel);
                 list = empService.page(page, wrapper);
             }
         }
@@ -108,7 +108,7 @@ public class EmpController {
             student.setEid(eid);
             flag = studentService.save(student);
             emp.setSid(student.getSid());
-            flag = empService.save(emp);
+            flag = empService.updateById(emp);
         }
         if(flag){
             return "success";
@@ -200,7 +200,9 @@ public class EmpController {
     @RequestMapping(value = "delEmpById")
     @ResponseBody
     public String delEmpById(int eid) {
-        boolean flag = empService.removeById(eid);
+        Emp emp = empService.getById(eid);
+        emp.setIsdel(1);
+        boolean flag = empService.updateById(emp);
         if (flag) {
             return "success";
         } else {
@@ -228,14 +230,9 @@ public class EmpController {
     public String delEmpsByIds(int[] eids) {
         List<Integer> list = new ArrayList<>();
         for (int eid : eids) {
-            list.add(eid);
+            delEmpById(eid);
         }
-        boolean flag = empService.removeByIds(list);
-        if (flag) {
-            return "success";
-        } else {
-            return "fail";
-        }
+        return "success";
     }
 
 
