@@ -52,6 +52,7 @@
 
     <update id="updateEmpScore">
         update studentscore set score = #{grade} where cid = #{cid} and sid = #{sid}
+        and type = #{type}
     </update>
 
 
