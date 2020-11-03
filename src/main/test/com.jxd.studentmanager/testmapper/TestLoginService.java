@@ -197,6 +197,33 @@ public class TestLoginService {
         }
     }
 
+    @Autowired
+    private ITermService termService;
+    @Test
+    public void getTermByEid(){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("eid",3);
+        List<Term> terms = termService.list(queryWrapper);
+        System.out.println(terms.size());
+    }
+
+    @Test
+    public void getScoreTotal(){
+        int sumScore = 0;
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("sid",2);
+        queryWrapper.eq("type",0);
+        List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
+        for (StudentScore studentScore:studentScores){
+            if (studentScore.getScore() >= 0){
+                sumScore+=studentScore.getScore();
+            } else {
+                sumScore = -1;
+                break;
+            }
+        }
+        System.out.println(sumScore);
+    }
 
 
 }
