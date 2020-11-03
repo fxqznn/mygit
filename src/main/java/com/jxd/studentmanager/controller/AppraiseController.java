@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.sql.Wrapper;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class AppraiseController {
     private IAppraiseService appraiseService;
 
     @RequestMapping("/getAppraise/{sid}/{type}")
+    @ResponseBody
     public Appraise getAppraise(@PathVariable("sid") int sid, @PathVariable("type") int type) {
         Map<String, Object> map = new HashMap<>();
         map.put("sid", sid);
@@ -33,4 +36,19 @@ public class AppraiseController {
         queryWrapper.allEq(map, true);
         return appraiseService.getOne(queryWrapper);
     }
+
+    @RequestMapping("/insert")
+    @ResponseBody
+    public int addAppraise(@RequestParam("content") String content,@RequestParam("sid") int sid
+                            ,@RequestParam("eid")int eid,@RequestParam("type") int type,
+                           @RequestParam("did")int did){
+        Appraise appraise = new Appraise();
+        appraise.setSid(sid);
+        appraise.setContent(content);
+        appraise.setEid(eid);
+        appraise.setType(type);
+        appraise.setDid(did);
+        return appraiseService.addAppraise(appraise);
+    }
+
 }
