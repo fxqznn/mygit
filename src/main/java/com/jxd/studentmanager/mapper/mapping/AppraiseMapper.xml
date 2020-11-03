@@ -8,4 +8,7 @@
        insert into appraise(content,sid,eid,type,did) values(#{content},#{sid},#{eid},#{type},#{did})
     </insert>
 
+    <select id="getAppraise">
+        select content from appraise where eid = #{eid} and type =#{type}
+    </select>
 </mapper>

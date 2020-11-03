@@ -238,16 +238,12 @@ public class StudentScoreController {
             map.put("ename",emp.getEname());
             map.put("job",emp.getJob());
             for (StudentScore ss : scoreList){
-                if (scoreList.size()==0){
-                    StudentScore ss1 = new StudentScore();
-                    ss1.setCid(ss.getCid());
-                    ss1.setSid(empService.getSid(ss.getEid()));
-                    ss1.setType(type);
-                    ss1.setEid(eid);
-                    ss1.setScore(-1);
-                    studentScoreService.insertSs(ss1);
-                }
+
                 map.put(Integer.toString(ss.getCid()),Double.toString(ss.getScore()));
+                double sum = 0;
+                sum+=ss.getScore();
+                double avg = sum/scoreList.size();
+                map.put("avg",avg);
             }
             courseWithScore.add(map);
         }
