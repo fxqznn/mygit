@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.StudentManagerApplication;
+import com.jxd.studentmanager.mapper.ICourseMapper;
 import com.jxd.studentmanager.mapper.IStudentMapper;
 import com.jxd.studentmanager.model.*;
 import com.jxd.studentmanager.service.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -42,6 +44,10 @@ public class TestLoginService {
 
     @Resource
     private IStudentService studentService;
+
+    @Autowired
+    private ICourseMapper courseMapper;
+
 
     @Test
     public void testLogin() {
@@ -183,4 +189,15 @@ public class TestLoginService {
         }
 
     }
+
+    @Test
+    public void getScoreWithCourse(){
+        List<Map<String,Object>> list = studentService.getScoreWithCourse(1,5,"张",1);
+        for (Map map:list){
+            System.out.println(map.get("z1")+"\t"+map.get("s1"));
+        }
+    }
+
+
+
 }

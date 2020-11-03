@@ -1,6 +1,8 @@
 package com.jxd.studentmanager.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.mapper.IStudentScoreMapper;
 import com.jxd.studentmanager.model.*;
 import com.jxd.studentmanager.service.*;
@@ -213,46 +215,15 @@ public class StudentScoreController {
 
     @RequestMapping(value = "getCourseWithScore", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public List<Map<String,Object>> getCourseWithScore(){
-        List<Map<String,Object>> courseWithScore = new ArrayList<>();
-        QueryWrapper queryWrapper1 = new QueryWrapper();
-        queryWrapper1.orderByAsc("sid");
-        List<Student> studentList = studentService.list(queryWrapper1);
-        List<Course> courseList = courseService.list();
-        for (Student student:studentList){
-            int sid = student.getSid();
-            String sname = student.getSname();
-            String sex = student.getSex();
-            String school = student.getSchool();
-            String address = student.getAddress();
-            insertStudenScoreBySid(sid,-1);
-            Map<String,Object> map = new HashMap<>();
-            map.put("sid",sid);
-            map.put("sname",sname);
-            map.put("sex",sex);
-            map.put("school",school);
-            map.put("address",address);
-            for (Course course:courseList){
-                int cid = course.getCid();
-                int type = course.getType();
-                String cname = course.getCname();
-                QueryWrapper queryWrapper = new QueryWrapper();
-                Map<String,Object> map1 = new HashMap<>();
-                map1.put("sid",sid);
-                map1.put("cid",cid);
-                map1.put("type",type);
-                queryWrapper.allEq(map1);
-                List<StudentScore> studentScores= studentScoreService.list(queryWrapper);
-                for (StudentScore studentScore:studentScores){
-                    Double score = studentScore.getScore();
-                    //System.out.println(cname+"\t"+score);
-                    map.put(Integer.toString(cid),score);
-                }
-            }
-            courseWithScore.add(map);
-        }
-        return courseWithScore;
-
+    public IPage<Map<String,Object>> getCourseWithScore(int current, int size, String snamelike, int tid){
+        List<Map<String,Object>> courseWithScore_page = studentService.getScoreWithCourse(current,size,snamelike,tid);
+        List<Map<String,Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
+        IPage<Map<String,Object>> page = new Page<>();
+        page.setCurrent(current);
+        page.setSize(size);
+        page.setTotal(courseWithScore.size());
+        page.setRecords(courseWithScore_page);
+        return page;
     }
 
     @RequestMapping(value = "showAbilityScore", produces = "application/json;charset=utf-8")
