@@ -43,8 +43,11 @@ public class CourseController {
      */
     @RequestMapping(value = "getCourses",produces = "application/json;charset=utf-8")
     @ResponseBody
+    public List<Map<String,Object>> getCoursesByTid (int tid){
+        return courseService.getCourseTerm(tid);
+    }
     //current当前页码，从1开始  size限制数据条数
-    public IPage<Course> getCoursesByTid(int current,int size, int tid,int isdel, String cname){
+    /*public IPage<Course> getCoursesByTid(int current,int size, int tid,int isdel, String cname){
         List<Course> coursesAll = courseService.list();
         List<Course> coursePage = courseService.selectCoursesByTid(current,size,tid,isdel,cname);
         Page<Course> page = new Page<>();
@@ -53,7 +56,7 @@ public class CourseController {
         page.setSize(size);
         page.setTotal(coursesAll.size());
         return page;
-    }
+    }*/
 
     /**
      * 老师往课程表中批量插入课程
