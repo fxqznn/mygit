@@ -64,6 +64,13 @@
         left join emp e on e.eid = t1.eid where e.eid = #{eid}
     </select>
 
+    <select id="getStudentCourses" resultMap="entity">
+        select t1.cid,cname from
+        (select ss.*,c.cname from studentscore ss left join
+        course c on c.cid=ss.cid where  ss.type = -1) t1
+        where t1.sid = #{sid}
+    </select>
+
     <insert id="insertSs" parameterType="com.jxd.studentmanager.model.StudentScore">
         insert into studentscore(ssid,sid,cid,score,type,eid)
         values(#{ssid},#{sid},#{cid},#{score},#{type},#{eid})

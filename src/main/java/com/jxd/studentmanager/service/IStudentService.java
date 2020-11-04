@@ -13,9 +13,13 @@ import java.util.Map;
  * @Date 2020/10/28
  * @Version 1.0
  */
-public interface IStudentService extends IService<Student>{
+public interface IStudentService extends IService<Student> {
     List<Student> getStudentPage(int page, int size, int tid, String sname);
-    List<Map<String,Object>> getScoreWithCourse(int page, int size,
-                                                String sname, int tid);
-    List<Map<String,Object>> getAllScoreWithCourse(String sname, int tid);
+
+    List<Map<String, Object>> getScoreWithCourse(int page, int size,
+                                                 String sname, int tid);
+
+    List<Map<String, Object>> getAllScoreWithCourse(String sname, int tid);
+
+    int getByUser(int uid);
 }

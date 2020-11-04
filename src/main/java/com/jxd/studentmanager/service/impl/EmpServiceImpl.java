@@ -2,7 +2,6 @@ package com.jxd.studentmanager.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jxd.studentmanager.mapper.IEmpMapper;
-import com.jxd.studentmanager.model.Course;
 import com.jxd.studentmanager.model.Emp;
 import com.jxd.studentmanager.model.StudentScore;
 import com.jxd.studentmanager.service.IEmpService;
@@ -26,8 +25,8 @@ public class EmpServiceImpl extends ServiceImpl<IEmpMapper, Emp> implements IEmp
     private IEmpMapper iem;
 
     @Override
-    public List<Emp> selectEmp(int eid,String ename) {
-        return iem.selectEmp(eid,ename);
+    public List<Emp> selectEmp(int eid, String ename) {
+        return iem.selectEmp(eid, ename);
     }
 
     @Override
@@ -36,5 +35,7 @@ public class EmpServiceImpl extends ServiceImpl<IEmpMapper, Emp> implements IEmp
     }
 
     @Override
-    public int getSid(int eid){return iem.getSid(eid);}
+    public int getSid(int eid) {
+        return iem.getSid(eid);
+    }
 }

@@ -69,4 +69,7 @@
             </if>
         </where>
     </select>
+    <select id="getByUser" resultType="java.lang.Integer">
+        select sid from emp e left join user u on u.eid = e.eid where u.uid = #{uid}
+    </select>
 </mapper>
