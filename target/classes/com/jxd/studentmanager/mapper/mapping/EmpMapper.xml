@@ -17,13 +17,22 @@
     <select id="selectEmp" resultMap="Emp">
         select eid,ename,job from
         (select e.*,dname from emp e left join dept d on e.did = d.did) t1
-        where did = (select did from emp where eid = #{eid}) and eid != #{eid}
+        <where>
+        did = (select did from emp where eid = #{eid}) and eid != #{eid}
+            <if test="ename != null and ename != ''">
+                and ename like '%' #{ename} '%'
+            </if>
+        </where>
     </select>
 
     <select id="selectScores" resultMap="Score">
         select cid,score from (select ss.*,c.cname from studentscore ss left join
         course c on c.cid=ss.cid where  ss.type = #{type}) t1 where sid =
         (select sid from student s where s.eid = #{eid})
+    </select>
+
+    <select id="getSid">
+        select sid from student where eid = #{eid}
     </select>
 
 </mapper>

@@ -19,6 +19,15 @@ public class Appraise {
     private int sid;
     private int eid;
     private int did;
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public Appraise() {
     }

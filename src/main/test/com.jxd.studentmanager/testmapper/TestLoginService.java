@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.StudentManagerApplication;
+import com.jxd.studentmanager.mapper.ICourseMapper;
 import com.jxd.studentmanager.mapper.IStudentMapper;
 import com.jxd.studentmanager.model.*;
 import com.jxd.studentmanager.service.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -42,6 +44,9 @@ public class TestLoginService {
 
     @Resource
     private IStudentService studentService;
+
+
+
 
     @Test
     public void testLogin() {
@@ -183,4 +188,42 @@ public class TestLoginService {
         }
 
     }
+
+    @Test
+    public void getScoreWithCourse(){
+        List<Map<String,Object>> list = studentService.getScoreWithCourse(1,5,"张",1);
+        for (Map map:list){
+            System.out.println(map.get("z1")+"\t"+map.get("s1"));
+        }
+    }
+
+    @Autowired
+    private ITermService termService;
+    @Test
+    public void getTermByEid(){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("eid",3);
+        List<Term> terms = termService.list(queryWrapper);
+        System.out.println(terms.size());
+    }
+
+    @Test
+    public void getScoreTotal(){
+        int sumScore = 0;
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("sid",2);
+        queryWrapper.eq("type",0);
+        List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
+        for (StudentScore studentScore:studentScores){
+            if (studentScore.getScore() >= 0){
+                sumScore+=studentScore.getScore();
+            } else {
+                sumScore = -1;
+                break;
+            }
+        }
+        System.out.println(sumScore);
+    }
+
+
 }

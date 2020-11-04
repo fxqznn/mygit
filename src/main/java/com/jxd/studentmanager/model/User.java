@@ -16,7 +16,6 @@ public class User {
 
     private int uname;  //员工工号
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String pwd;
 
     private int role;   /*0-管理员

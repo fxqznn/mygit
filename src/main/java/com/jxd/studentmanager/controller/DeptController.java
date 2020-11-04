@@ -60,6 +60,12 @@ public class DeptController {
         }
     }
 
+    @RequestMapping(value = "getAllDeptForEmp")
+    @ResponseBody
+    public List<Dept> getAllDeptForEmp(){
+        return deptService.list();
+    }
+
     @RequestMapping(value = "getDeptById")
     @ResponseBody
     public Map<String, Object> getDeptById(int did) {

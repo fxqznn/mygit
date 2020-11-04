@@ -1,6 +1,8 @@
 package com.jxd.studentmanager.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.mapper.IStudentScoreMapper;
 import com.jxd.studentmanager.model.*;
 import com.jxd.studentmanager.service.*;
@@ -160,10 +162,18 @@ public class StudentScoreController {
         return studentScoreService.selectAbilities(sid,type);
     }
 
+    /**
+     * 修改成绩 (课程与能力)
+     * @param cid  课程id
+     * @param grade 课程成绩
+     * @param sid   学生id
+     * @param type  成绩类型 0-转正能力评价  1-第一年工作能力评价 2-第二年工作能力评价 3-第三年工作能力评价 4-课程成绩
+     * @return
+     */
     @RequestMapping("/updateEmpScore")
     @ResponseBody
-    public String updateEmpScore(int cid, double grade, int sid) {
-        if (studentScoreService.updateEmpScore(cid, grade, sid)) {
+    public String updateEmpScore(int cid, double grade, int sid,int type) {
+        if (studentScoreService.updateEmpScore(cid, grade, sid,type)) {
             return "success";
         } else {
             return "false";
@@ -205,54 +215,22 @@ public class StudentScoreController {
 
     @RequestMapping(value = "getCourseWithScore", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public List<Map<String,Object>> getCourseWithScore(){
-        List<Map<String,Object>> courseWithScore = new ArrayList<>();
-        QueryWrapper queryWrapper1 = new QueryWrapper();
-        queryWrapper1.orderByAsc("sid");
-        List<Student> studentList = studentService.list(queryWrapper1);
-        List<Course> courseList = courseService.list();
-        for (Student student:studentList){
-            int sid = student.getSid();
-            String sname = student.getSname();
-            String sex = student.getSex();
-            String school = student.getSchool();
-            String address = student.getAddress();
-            insertStudenScoreBySid(sid,-1);
-            Map<String,Object> map = new HashMap<>();
-            map.put("sid",sid);
-            map.put("sname",sname);
-            map.put("sex",sex);
-            map.put("school",school);
-            map.put("address",address);
-            for (Course course:courseList){
-                int cid = course.getCid();
-                int type = course.getType();
-                String cname = course.getCname();
-                QueryWrapper queryWrapper = new QueryWrapper();
-                Map<String,Object> map1 = new HashMap<>();
-                map1.put("sid",sid);
-                map1.put("cid",cid);
-                map1.put("type",type);
-                queryWrapper.allEq(map1);
-                List<StudentScore> studentScores= studentScoreService.list(queryWrapper);
-                for (StudentScore studentScore:studentScores){
-                    Double score = studentScore.getScore();
-                    //System.out.println(cname+"\t"+score);
-                    map.put(Integer.toString(cid),score);
-                }
-            }
-            courseWithScore.add(map);
-        }
-        return courseWithScore;
-
+    public IPage<Map<String,Object>> getCourseWithScore(int current, int size, String snamelike, int tid){
+        List<Map<String,Object>> courseWithScore_page = studentService.getScoreWithCourse(current,size,snamelike,tid);
+        List<Map<String,Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
+        IPage<Map<String,Object>> page = new Page<>();
+        page.setCurrent(current);
+        page.setSize(size);
+        page.setTotal(courseWithScore.size());
+        page.setRecords(courseWithScore_page);
+        return page;
     }
 
-    @RequestMapping("/showAbilityScore")
+    @RequestMapping(value = "showAbilityScore", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public List<Map<Object,Object>> showAs(@RequestParam("eid") int eid,int type){
+    public List<Map<Object,Object>> showAs(@RequestParam("eid") int eid,int type,@RequestParam("ename") String ename){
         List<Map<Object,Object>> courseWithScore = new ArrayList<>();
-        List<Emp> empList = empService.selectEmp(eid);
-
+        List<Emp> empList = empService.selectEmp(eid,ename);
         for (Emp emp: empList){
             Map<Object,Object> map = new HashMap<>();
             List<StudentScore> scoreList = empService.selectScores(type,emp.getEid());
@@ -260,8 +238,12 @@ public class StudentScoreController {
             map.put("ename",emp.getEname());
             map.put("job",emp.getJob());
             for (StudentScore ss : scoreList){
-                map.put(Integer.toString(ss.getCid()),Double.toString(ss.getScore()));
 
+                map.put(Integer.toString(ss.getCid()),Double.toString(ss.getScore()));
+                double sum = 0;
+                sum+=ss.getScore();
+                double avg = sum/scoreList.size();
+                map.put("avg",avg);
             }
             courseWithScore.add(map);
         }

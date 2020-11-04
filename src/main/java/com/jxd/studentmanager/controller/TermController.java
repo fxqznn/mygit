@@ -198,4 +198,13 @@ public class TermController {
         }
         return "success";
     }
+
+    @RequestMapping(value = "getTermByEid" ,produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public List<Term> getTermByEid(int eid){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("eid",eid);
+        List<Term> terms = termService.list(queryWrapper);
+        return terms;
+    }
 }
