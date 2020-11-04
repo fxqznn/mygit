@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.mapper.IStudentScoreMapper;
 import com.jxd.studentmanager.model.*;
 import com.jxd.studentmanager.service.*;
+import com.jxd.studentmanager.service.impl.CourseServiceImpl;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -227,16 +228,19 @@ public class StudentScoreController {
         insertScoreStudent(tid);
         List<Map<String,Object>> courseWithScore_page = studentService.getScoreWithCourse(current,size,snamelike,tid);
         List<Map<String,Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
-        double sumscore = 0;
-        int courseCount = 0;
+
+        QueryWrapper queryCourse = new QueryWrapper();
+        queryCourse.eq("tid",tid);
+        List<Course> courses = termCourseService.list(queryCourse);
+        int courseCount = courses.size();
         for(Map map:courseWithScore_page){
+            double sumscore = -1;
             QueryWrapper queryWrapper = new QueryWrapper();
             queryWrapper.eq("sid",map.get("sid"));
             queryWrapper.eq("type",-1);
             List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
             for (StudentScore studentScore:studentScores){
                 if (studentScore.getScore() >= 0){
-                    courseCount++;
                     sumscore += studentScore.getScore();
                 } else {
                     courseCount = 0;
@@ -245,7 +249,7 @@ public class StudentScoreController {
                 }
             }
             if (sumscore>=0){
-                map.put("sumscore",sumscore/courseCount);
+                map.put("sumscore",(sumscore+1)/courseCount);
             } else {
                 map.put("sumscore",sumscore);
             }
