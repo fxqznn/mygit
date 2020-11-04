@@ -212,12 +212,45 @@ public class StudentScoreController {
             return "error";
         }
     }
+    public void insertScoreStudent(int tid){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("tid",tid);
+        List<Student> students = studentService.list(queryWrapper);
+        for(Student student:students){
+            insertStudenScoreBySid(student.getSid(),-1);
+        }
+    }
 
     @RequestMapping(value = "getCourseWithScore", produces = "application/json;charset=utf-8")
     @ResponseBody
     public IPage<Map<String,Object>> getCourseWithScore(int current, int size, String snamelike, int tid){
+        insertScoreStudent(tid);
         List<Map<String,Object>> courseWithScore_page = studentService.getScoreWithCourse(current,size,snamelike,tid);
         List<Map<String,Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
+        double sumscore = 0;
+        int courseCount = 0;
+        for(Map map:courseWithScore_page){
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("sid",map.get("sid"));
+            queryWrapper.eq("type",-1);
+            List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
+            for (StudentScore studentScore:studentScores){
+                if (studentScore.getScore() >= 0){
+                    courseCount++;
+                    sumscore += studentScore.getScore();
+                } else {
+                    courseCount = 0;
+                    sumscore = -1;
+                    break;
+                }
+            }
+            if (sumscore>=0){
+                map.put("sumscore",sumscore/courseCount);
+            } else {
+                map.put("sumscore",sumscore);
+            }
+
+        }
         IPage<Map<String,Object>> page = new Page<>();
         page.setCurrent(current);
         page.setSize(size);

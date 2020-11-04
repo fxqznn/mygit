@@ -19,12 +19,12 @@
     </select>
     <select id="getScoreWithCourse" resultType="java.util.HashMap">
         select a.*,b.* from
-        (select s.sname,s.sex,s.tid,s.school,s.address,m.* from student s left join
-        (select sid,
+        (select s.sname,s.sex,s.tid,s.school,s.address,s.nation,s.birthday,s.marry,s.phone,m.* from student s left join
+        (select sid,ss.eid,
         <foreach collection="courseList" item="course" separator=",">
             sum(case when cid = #{course.cid} then score else 0 end) z#{course.cid}
         </foreach>
-        from studentscore ss
+        from studentscore ss  where type = -1
         group by sid order by sid)m on s.sid=m.sid) a left join (
         select sid
         ,max(case when type = 0 then content else 0 end) s1
@@ -35,7 +35,9 @@
         from appraise
         group by sid) b on a.sid=b.sid
         <where>
-            tid=#{tid}
+            <if test="tid != 0">
+                and tid=#{tid}
+            </if>
             <if test="sname != null and sname != ''">
                 and sname like concat('%',#{sname},'%')
             </if>
@@ -47,12 +49,12 @@
     </select>
     <select id="getAllScoreWithCourse" resultType="java.util.HashMap">
         select a.*,b.* from
-        (select s.sname,s.sex,s.tid,s.school,s.address,m.* from student s left join
-        (select sid,
+        (select s.sname,s.sex,s.tid,s.school,s.address,s.nation,s.birthday,s.marry,s.phone,m.* from student s left join
+        (select sid,ss.eid,
         <foreach collection="courseList" item="course" separator=",">
             sum(case when cid = #{course.cid} then score else 0 end) z#{course.cid}
         </foreach>
-        from studentscore ss
+        from studentscore ss  where type = -1
         group by sid order by sid)m on s.sid=m.sid) a left join (
         select sid
         ,max(case when type = 0 then content else 0 end) s1
@@ -63,7 +65,9 @@
         from appraise
         group by sid) b on a.sid=b.sid
         <where>
-            tid=#{tid}
+            <if test="tid != 0">
+                and tid=#{tid}
+            </if>
             <if test="sname != null and sname != ''">
                 and sname like concat('%',#{sname},'%')
             </if>
