@@ -25,4 +25,14 @@ public class AppraiseServiceImpl extends ServiceImpl<IAppraiseMapper, Appraise> 
     public int addAppraise(Appraise appraise) {
         return appraiseMapper.addAppraise(appraise);
     }
+
+    @Override
+    public String getAppraise(int sid, int type) {
+        return appraiseMapper.getAppraise(sid,type);
+    }
+
+    @Override
+    public int updateApp(String content, int sid, int type) {
+        return appraiseMapper.updateApp(content,sid,type);
+    }
 }

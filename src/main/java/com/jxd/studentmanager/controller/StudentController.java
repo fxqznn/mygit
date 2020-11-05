@@ -39,7 +39,7 @@ public class StudentController {
 
     @RequestMapping("/getStudent")
     @ResponseBody
-    public Student getStudent(int eid) {return studentService.getStudentByEid(eid)}
+    public Student getStudent(int eid) {return studentService.getStudentByEid(eid);}
 
 
     @RequestMapping("/getSelf")

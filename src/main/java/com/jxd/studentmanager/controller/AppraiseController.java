@@ -51,4 +51,16 @@ public class AppraiseController {
         return appraiseService.addAppraise(appraise);
     }
 
+    @RequestMapping("/getApp")
+    @ResponseBody
+    public String getApp(@RequestParam("sid") int sid, @RequestParam("type") int type){
+        return appraiseService.getAppraise(sid,type);
+    }
+
+    @RequestMapping("/updateApp")
+    @ResponseBody
+    public int updateApp(@RequestParam("content")String content,@RequestParam("sid")int sid,
+                         @RequestParam("type")int type){
+        return appraiseService.updateApp(content, sid, type);
+    }
 }
