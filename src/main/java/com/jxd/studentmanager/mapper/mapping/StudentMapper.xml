@@ -31,7 +31,7 @@
         ,max(case when type = 1 then content else 0 end) s2
         ,max(case when type = 2 then content else 0 end) s3
         ,max(case when type = 3 then content else 0 end) s4
-        ,max(case when type = 4 then content else 0 end) s5
+        ,max(case when type = -1 then content else 0 end) s5
         from appraise
         group by sid) b on a.sid=b.sid
         <where>
@@ -61,7 +61,7 @@
         ,max(case when type = 1 then content else 0 end) s2
         ,max(case when type = 2 then content else 0 end) s3
         ,max(case when type = 3 then content else 0 end) s4
-        ,max(case when type = 4 then content else 0 end) s5
+        ,max(case when type = -1 then content else 0 end) s5
         from appraise
         group by sid) b on a.sid=b.sid
         <where>

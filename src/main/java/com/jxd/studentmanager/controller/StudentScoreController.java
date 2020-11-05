@@ -43,38 +43,40 @@ public class StudentScoreController {
     private IDeptCourseService deptCourseService;
     @Autowired
     private ICourseService courseService;
-
+    @Autowired
+    private ITermService termService;
 
 
     /**
      * 通过学生id查询成绩时调用,根据学生的id和查询成绩的类型调用
+     *
      * @param sid
      * @param type 查询成绩类型 0-4：转正、1年、2年、3年 -1：金桥
      */
-    public void insertStudenScoreBySid(int sid,int type){
+    public void insertStudenScoreBySid(int sid, int type) {
         Student student = studentService.getById(sid);
 
-        if(type == -1){
+        if (type == -1) {
             //该学生所在学期的选中的课程
             QueryWrapper<TermCourse> wrapper = new QueryWrapper<>();
-            wrapper.eq("tid",student.getTid());
+            wrapper.eq("tid", student.getTid());
             List<TermCourse> schoolCourse = termCourseService.list(wrapper);
 
             //该学生选中学生课程表中选中的信息
             QueryWrapper<StudentScore> wrapper2 = new QueryWrapper<>();
-            wrapper2.eq("sid",student.getSid()).eq("type",type);
+            wrapper2.eq("sid", student.getSid()).eq("type", type);
             List<StudentScore> allScore = studentScoreService.list(wrapper2);
 
             //学期中存在，成绩中不存在，需要添加新的成绩记录
-            for(TermCourse termselectcourse : schoolCourse){
+            for (TermCourse termselectcourse : schoolCourse) {
                 boolean isexist = false;
-                for(StudentScore studentScore : allScore){
-                    if(termselectcourse.getCid() == studentScore.getCid()){
+                for (StudentScore studentScore : allScore) {
+                    if (termselectcourse.getCid() == studentScore.getCid()) {
                         isexist = true;
                         break;
                     }
                 }
-                if(isexist == false){
+                if (isexist == false) {
                     StudentScore studentScore = new StudentScore();
                     studentScore.setSid(sid);
                     studentScore.setCid(termselectcourse.getCid());
@@ -83,14 +85,14 @@ public class StudentScoreController {
                 }
             }
             //成绩中存在，学期中不存在，需要删除成绩记录
-            for(StudentScore score : allScore){
+            for (StudentScore score : allScore) {
                 boolean isexist = false;
-                for(TermCourse termCourse : schoolCourse){
-                    if(score.getCid() == termCourse.getCid()){
+                for (TermCourse termCourse : schoolCourse) {
+                    if (score.getCid() == termCourse.getCid()) {
                         isexist = true;
                     }
                 }
-                if(isexist == false){
+                if (isexist == false) {
                     studentScoreService.removeById(score.getSsid());
                 }
             }
@@ -98,24 +100,24 @@ public class StudentScoreController {
             //该学生所在部门选中的课程
             Emp emp = empService.getById(student.getEid());
             QueryWrapper<DeptCourse> wrapper1 = new QueryWrapper<>();
-            wrapper1.eq("did",emp.getDid());
+            wrapper1.eq("did", emp.getDid());
             List<DeptCourse> deptCourse = deptCourseService.list();
 
             //该学生选中学生课程表中选中的信息
             QueryWrapper<StudentScore> wrapper2 = new QueryWrapper<>();
-            wrapper2.eq("sid",student.getSid()).eq("type",type);
+            wrapper2.eq("sid", student.getSid()).eq("type", type);
             List<StudentScore> allScore = studentScoreService.list(wrapper2);
 
             //部门中存在，成绩中不存在，需要添加新的成绩记录
-            for(DeptCourse deptselectcourse : deptCourse){
+            for (DeptCourse deptselectcourse : deptCourse) {
                 boolean isexist = false;
-                for(StudentScore studentScore : allScore){
-                    if(deptselectcourse.getCid() == studentScore.getCid()){
+                for (StudentScore studentScore : allScore) {
+                    if (deptselectcourse.getCid() == studentScore.getCid()) {
                         isexist = true;
                         break;
                     }
                 }
-                if(isexist == false){
+                if (isexist == false) {
                     StudentScore studentScore = new StudentScore();
                     studentScore.setSid(sid);
                     studentScore.setCid(deptselectcourse.getCid());
@@ -124,14 +126,14 @@ public class StudentScoreController {
                 }
             }
             //成绩中存在，部门中不存在，需要删除成绩记录
-            for(StudentScore score : allScore){
+            for (StudentScore score : allScore) {
                 boolean isexist = false;
-                for(DeptCourse deptselectcourse : deptCourse){
-                    if(score.getCid() == deptselectcourse.getCid()){
+                for (DeptCourse deptselectcourse : deptCourse) {
+                    if (score.getCid() == deptselectcourse.getCid()) {
                         isexist = true;
                     }
                 }
-                if(isexist == false){
+                if (isexist == false) {
                     studentScoreService.removeById(score.getSsid());
                 }
             }
@@ -140,32 +142,40 @@ public class StudentScoreController {
 
     /**
      * 通过员工id查询成绩时使用
+     *
      * @param eid
-     * @param type  查询成绩类型
+     * @param type 查询成绩类型
      */
-    public void insertStudentScoreByEid(int eid,int type){
+    public void insertStudentScoreByEid(int eid, int type) {
         QueryWrapper<Student> wrapper = new QueryWrapper<>();
-        wrapper.eq("eid",eid);
+        wrapper.eq("eid", eid);
         Student student = studentService.getOne(wrapper);
-        insertStudenScoreBySid(student.getSid(),type);
+        insertStudenScoreBySid(student.getSid(), type);
     }
 
 
     @RequestMapping("/getScoreCourses/{sid}")
     @ResponseBody
     public List<Map<String, Object>> getScoreCourses(@PathVariable("sid") int sid) {
-        return studentScoreService.selectCourses(sid);
+        Map<String, Object> map = studentScoreService.selectCoursesScore(sid);
+        List<Map<String, Object>> list = new ArrayList<>();
+        list.add(map);
+        return list;
     }
 
     @RequestMapping("/getScoreAbilities/{sid}/{type}")
     @ResponseBody
-    public List<Map<String, Object>> getScoreAbilities(@PathVariable("sid") int sid,@PathVariable("type") int type) {
-        return studentScoreService.selectAbilities(sid,type);
+    public List<Map<String, Object>> getScoreAbilities(@PathVariable("sid") int sid, @PathVariable("type") int type) {
+        Map<String, Object> map = studentScoreService.selectAbilitiesScore(sid, type);
+        List<Map<String, Object>> list = new ArrayList<>();
+        list.add(map);
+        return list;
     }
 
     /**
      * 修改成绩 (课程与能力)
-     * @param cid  课程id
+     *
+     * @param cid   课程id
      * @param grade 课程成绩
      * @param sid   学生id
      * @param type  成绩类型 0-转正能力评价  1-第一年工作能力评价 2-第二年工作能力评价 3-第三年工作能力评价 4-课程成绩
@@ -173,8 +183,8 @@ public class StudentScoreController {
      */
     @RequestMapping("/updateEmpScore")
     @ResponseBody
-    public String updateEmpScore(int cid, double grade, int sid,int type) {
-        if (studentScoreService.updateEmpScore(cid, grade, sid,type)) {
+    public String updateEmpScore(int cid, double grade, int sid, int type) {
+        if (studentScoreService.updateEmpScore(cid, grade, sid, type)) {
             return "success";
         } else {
             return "false";
@@ -183,19 +193,35 @@ public class StudentScoreController {
 
     /**
      * 根据根据经理工号和成绩类型动态查询表头
-     * @param eid  经理工号
+     *
+     * @param eid 经理工号
      * @return
      */
     @RequestMapping("/getAllEntity")
     @ResponseBody
-    public List<Map<String,Object>> getAllEntity(int eid){
-        List<Map<String,Object>> list = new ArrayList<>();
+    public List<Map<String, Object>> getAllEntity(int eid) {
+        List<Map<String, Object>> list = new ArrayList<>();
         List<Course> courseList = studentScoreService.getAllEntity(eid);
-        for (Course course : courseList){
+        for (Course course : courseList) {
             String cid = Integer.toString(course.getCid());
-            Map<String,Object> map = new HashMap<>();
-            map.put("cid",cid);
-            map.put("cname",course.getCname());
+            Map<String, Object> map = new HashMap<>();
+            map.put("cid", cid);
+            map.put("cname", course.getCname());
+            list.add(map);
+        }
+        return list;
+    }
+
+    @RequestMapping("/getStudentCourses/{sid}")
+    @ResponseBody
+    public List<Map<String, Object>> getStudentCourses(@PathVariable("sid") int sid) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        List<Course> courseList = studentScoreService.getStudentCourses(sid);
+        for (Course course : courseList) {
+            String cid = Integer.toString(course.getCid());
+            Map<String, Object> map = new HashMap<>();
+            map.put("cid", cid);
+            map.put("cname", course.getCname());
             list.add(map);
         }
         return list;
@@ -204,57 +230,47 @@ public class StudentScoreController {
 
     @RequestMapping("/updateStudentScore")
     @ResponseBody
-    public String updateStudentScore(StudentScore studentScore){
+    public String updateStudentScore(StudentScore studentScore) {
         boolean flag = studentScoreService.updateById(studentScore);
-        if (flag){
+        if (flag) {
             return "success";
         } else {
             return "error";
         }
     }
-    public void insertScoreStudent(int tid){
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("tid",tid);
-        List<Student> students = studentService.list(queryWrapper);
-        for(Student student:students){
-            insertStudenScoreBySid(student.getSid(),-1);
-        }
-    }
 
     @RequestMapping(value = "getCourseWithScore", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public IPage<Map<String,Object>> getCourseWithScore(int current, int size, String snamelike, int tid){
-        insertScoreStudent(tid);
-        List<Map<String,Object>> courseWithScore_page = studentService.getScoreWithCourse(current,size,snamelike,tid);
-        List<Map<String,Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
-
+    public IPage<Map<String, Object>> getCourseWithScore(int current, int size, String snamelike, int tid) {
+        List<Map<String, Object>> courseWithScore_page = studentService.getScoreWithCourse(current, size, snamelike, tid);
+        List<Map<String, Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
+        boolean flag = true;
         QueryWrapper queryCourse = new QueryWrapper();
-        queryCourse.eq("tid",tid);
+        queryCourse.eq("tid", tid);
         List<Course> courses = termCourseService.list(queryCourse);
         int courseCount = courses.size();
         for(Map map:courseWithScore_page){
-            double sumscore = -1;
+            double sumscore = 0;
             QueryWrapper queryWrapper = new QueryWrapper();
-            queryWrapper.eq("sid",map.get("sid"));
-            queryWrapper.eq("type",-1);
+            queryWrapper.eq("sid", map.get("sid"));
+            queryWrapper.eq("type", -1);
             List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
-            for (StudentScore studentScore:studentScores){
-                if (studentScore.getScore() >= 0){
+            for (StudentScore studentScore : studentScores) {
+                map.put("z"+studentScore.getCid(),studentScore.getScore());
+                if (studentScore.getScore() >= 0) {
                     sumscore += studentScore.getScore();
                 } else {
-                    courseCount = 0;
-                    sumscore = -1;
-                    break;
+                    flag = false;
+                    continue;
                 }
             }
-            if (sumscore>=0){
-                map.put("sumscore",(sumscore+1)/courseCount);
+            if (flag) {
+                map.put("sumscore", sumscore / courseCount);
             } else {
-                map.put("sumscore",sumscore);
+                map.put("sumscore", -1);
             }
-
         }
-        IPage<Map<String,Object>> page = new Page<>();
+        IPage<Map<String, Object>> page = new Page<>();
         page.setCurrent(current);
         page.setSize(size);
         page.setTotal(courseWithScore.size());
@@ -262,25 +278,59 @@ public class StudentScoreController {
         return page;
     }
 
+    @RequestMapping(value = "getStudentScoresBySid",produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public List<Map<String,Object>> getStudentScoresBySid(int sid,int tid){
+        double sumscore = 0;
+        boolean flag = true;
+        Term term = termService.getById(tid);
+        Map<String,Object> emp = empService.showManager(term.getEid());
+        List<Map<String,Object>> studentScoresBySid = new ArrayList<>();
+        QueryWrapper queryWrapper = new QueryWrapper();
+        Map<String,Object> queryMap = new HashMap<>();
+        queryMap.put("sid",sid);
+        queryMap.put("type",-1);
+        queryWrapper.allEq(queryMap);
+        List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
+        Map<String,Object> map = new HashMap<>();
+        int courseCount = studentScores.size();
+        for (StudentScore studentScore:studentScores){
+            map.put(Integer.toString(studentScore.getCid()),studentScore.getScore());
+            if (studentScore.getScore() >= 0) {
+                sumscore += studentScore.getScore();
+            } else {
+                flag = false;
+            }
+        }
+        if (flag) {
+            map.put("sumscore", sumscore / courseCount);
+        } else {
+            map.put("sumscore", -1);
+        }
+        map.put("tname",term.getTname());
+        map.put("ename",emp.get("ename"));
+        studentScoresBySid.add(map);
+        return studentScoresBySid;
+    }
+
     @RequestMapping(value = "showAbilityScore", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public List<Map<Object,Object>> showAs(@RequestParam("eid") int eid,int type,@RequestParam("ename") String ename){
-        List<Map<Object,Object>> courseWithScore = new ArrayList<>();
-        List<Emp> empList = empService.selectEmp(eid,ename);
-        for (Emp emp: empList){
-            Map<Object,Object> map = new HashMap<>();
-            List<StudentScore> scoreList = empService.selectScores(type,emp.getEid());
-            map.put("eid",emp.getEid());
-            map.put("ename",emp.getEname());
-            map.put("job",emp.getJob());
-            double sum = 0;
-            for (StudentScore ss : scoreList){
-                map.put(Integer.toString(ss.getCid()),Double.toString(ss.getScore()));
-                sum+=ss.getScore();
-            }
-            if(sum>0){
-                double avg = sum/scoreList.size();
-                map.put("avg",avg);
+    public List<Map<Object, Object>> showAs(@RequestParam("eid") int eid, int type, @RequestParam("ename") String ename) {
+        List<Map<Object, Object>> courseWithScore = new ArrayList<>();
+        List<Emp> empList = empService.selectEmp(eid, ename);
+        for (Emp emp : empList) {
+            Map<Object, Object> map = new HashMap<>();
+            List<StudentScore> scoreList = empService.selectScores(type, emp.getEid());
+            map.put("eid", emp.getEid());
+            map.put("ename", emp.getEname());
+            map.put("job", emp.getJob());
+            for (StudentScore ss : scoreList) {
+
+                map.put(Integer.toString(ss.getCid()), Double.toString(ss.getScore()));
+                double sum = 0;
+                sum += ss.getScore();
+                double avg = sum / scoreList.size();
+                map.put("avg", avg);
             }
             courseWithScore.add(map);
         }

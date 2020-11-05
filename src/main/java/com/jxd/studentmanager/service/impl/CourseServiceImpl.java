@@ -68,4 +68,32 @@ public class CourseServiceImpl extends ServiceImpl<ICourseMapper, Course> implem
 
         return CnameWithCid;
     }
+
+    @Override
+    public List<Map<String, Object>> getCourseScoreTerm(int tid) {
+        List<Map<String,Object>> CnameWithCid = new ArrayList<>();
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("tid",tid);
+        List<TermCourse> termCourses = termCourseMapper.selectList(queryWrapper);
+        QueryWrapper queryWrapper1 = new QueryWrapper();
+        queryWrapper1.eq("type",0);
+        List<Course> courses = courseMapper.selectList(queryWrapper1);
+
+        for(TermCourse termCourse:termCourses){
+            Map<String,Object> map = new HashMap<>();
+            for(Course course : courses){
+                if (termCourse.getCid() == course.getCid()){
+                    map.put("cid",Integer.toString(termCourse.getCid()));
+                    map.put("cname",course.getCname());
+
+                    break;
+                } else {
+                    continue;
+                }
+            }
+            CnameWithCid.add(map);
+        }
+
+        return CnameWithCid;
+    }
 }

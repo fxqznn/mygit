@@ -47,6 +47,12 @@ public class CourseController {
         return courseService.getCourseTerm(tid);
     }
 
+    @RequestMapping(value = "getCoursesTerm",produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public List<Map<String,Object>> getCoursesTerm (int tid){
+        return courseService.getCourseScoreTerm(tid);
+    }
+
     /**
      * 老师往课程表中批量插入课程
      * @param courses
@@ -131,23 +137,14 @@ public class CourseController {
      */
     @RequestMapping(value = "getAllCourse")
     @ResponseBody
-    public IPage<Course> getAllCourse(Page<Course> page, int type, String cname){
+    public IPage<Course> getAllCourse(Page<Course> page, int type, String cname,int isdel){
         QueryWrapper<Course> wrapper = new QueryWrapper<>();
 
-        if(type == 2){
-            //查询全部,没有选择课程类别
-            if(cname == null || "".equals(cname)){
-                wrapper.eq("isdel",0);
-            } else {
-                wrapper.like("cname",cname).eq("isdel",0);
-            }
+        //查询对应类别的的课程
+        if(cname == null || "".equals(cname)){
+            wrapper.eq("type",type).eq("isdel",isdel);
         } else {
-            //查询对应类别的的课程
-            if(cname == null || "".equals(cname)){
-                wrapper.eq("type",type).eq("isdel",0);
-            } else {
-                wrapper.like("cname",cname).eq("type",type).eq("isdel",0);
-            }
+            wrapper.like("cname",cname).eq("type",type).eq("isdel",isdel);
         }
 
         return courseService.page(page,wrapper);
@@ -167,6 +164,17 @@ public class CourseController {
             return "success";
         } else {
             return "true";
+        }
+    }
+
+    @RequestMapping(value = "editCourse")
+    @ResponseBody
+    public String editCourse(Course course){
+        boolean flag = courseService.updateById(course);
+        if(flag){
+            return "success";
+        } else {
+            return "fail";
         }
     }
 
