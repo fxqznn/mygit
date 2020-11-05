@@ -55,4 +55,9 @@ public class StudentServiceImpl extends ServiceImpl<IStudentMapper, Student> imp
     public int getByUser(int uid) {
         return studentMapper.getByUser(uid);
     }
+    @Override
+    public Student getStudentByEid(int eid) {
+        return studentMapper.getOneByEid(eid);
+    }
+
 }

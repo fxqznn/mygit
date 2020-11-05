@@ -14,4 +14,6 @@ public interface IEmpService extends IService<Emp> {
     List<StudentScore> selectScores(int type, int eid);
 
     int getSid(int eid);
+
+    Map showManager(int eid);
 }

@@ -11,13 +11,13 @@ import java.util.Map;
 public interface IStudentMapper extends BaseMapper<Student> {
     List<Student> getStudentPage(@Param("pageStart") int pageStart,
                                  @Param("pageSize") int pageSize, @Param("sname") String sname, @Param("tid") int tid);
+    List<Map<String,Object>> getScoreWithCourse(@Param("pageStart") int pageStart,
+                                                @Param("pageSize") int pageSize, @Param("courseList") List<Course> courses,
+                                                @Param("sname") String sname,@Param("tid") int tid);
+    List<Map<String,Object>> getAllScoreWithCourse(@Param("courseList") List<Course> courses,
+                                                   @Param("sname") String sname,@Param("tid") int tid);
 
-    List<Map<String, Object>> getScoreWithCourse(@Param("pageStart") int pageStart,
-                                                 @Param("pageSize") int pageSize, @Param("courseList") List<Course> courses,
-                                                 @Param("sname") String sname, @Param("tid") int tid);
-
-    List<Map<String, Object>> getAllScoreWithCourse(@Param("courseList") List<Course> courses,
-                                                    @Param("sname") String sname, @Param("tid") int tid);
+    Student getOneByEid(@Param("eid") int eid);
 
     int getByUser(int uid);
 }

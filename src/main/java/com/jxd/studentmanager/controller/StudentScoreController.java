@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxd.studentmanager.mapper.IStudentScoreMapper;
 import com.jxd.studentmanager.model.*;
 import com.jxd.studentmanager.service.*;
+import com.jxd.studentmanager.service.impl.CourseServiceImpl;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -154,17 +155,13 @@ public class StudentScoreController {
     @RequestMapping("/getScoreCourses/{sid}")
     @ResponseBody
     public List<Map<String, Object>> getScoreCourses(@PathVariable("sid") int sid) {
-        List<Map<String, Object>> list = new ArrayList<>();
-        list.add(studentScoreService.selectCoursesScore(sid));
-        return list;
+        return studentScoreService.selectCourses(sid);
     }
 
     @RequestMapping("/getScoreAbilities/{sid}/{type}")
     @ResponseBody
     public List<Map<String, Object>> getScoreAbilities(@PathVariable("sid") int sid, @PathVariable("type") int type) {
-        List<Map<String, Object>> list = new ArrayList<>();
-        list.add(studentScoreService.selectAbilitiesScore(sid, type));
-        return list;
+        return studentScoreService.selectAbilities(sid, type);
     }
 
     /**
@@ -189,15 +186,14 @@ public class StudentScoreController {
     /**
      * 根据根据经理工号和成绩类型动态查询表头
      *
-     * @param eid  经理工号
-     * @param type 成绩类型 0 ：转正   1：第一年  2：第二年  3：第三年
+     * @param eid 经理工号
      * @return
      */
     @RequestMapping("/getAllEntity")
     @ResponseBody
-    public List<Map<String, Object>> getAllEntity(int eid, int type) {
+    public List<Map<String, Object>> getAllEntity(int eid) {
         List<Map<String, Object>> list = new ArrayList<>();
-        List<Course> courseList = studentScoreService.getAllEntity(eid, type);
+        List<Course> courseList = studentScoreService.getAllEntity(eid);
         for (Course course : courseList) {
             String cid = Integer.toString(course.getCid());
             Map<String, Object> map = new HashMap<>();
@@ -240,6 +236,33 @@ public class StudentScoreController {
     public IPage<Map<String, Object>> getCourseWithScore(int current, int size, String snamelike, int tid) {
         List<Map<String, Object>> courseWithScore_page = studentService.getScoreWithCourse(current, size, snamelike, tid);
         List<Map<String, Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
+
+        QueryWrapper queryCourse = new QueryWrapper();
+        queryCourse.eq("tid", tid);
+        List<Course> courses = termCourseService.list(queryCourse);
+        int courseCount = courses.size();
+        for (Map map : courseWithScore_page) {
+            double sumscore = -1;
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("sid", map.get("sid"));
+            queryWrapper.eq("type", -1);
+            List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
+            for (StudentScore studentScore : studentScores) {
+                if (studentScore.getScore() >= 0) {
+                    sumscore += studentScore.getScore();
+                } else {
+                    courseCount = 0;
+                    sumscore = -1;
+                    break;
+                }
+            }
+            if (sumscore >= 0) {
+                map.put("sumscore", (sumscore + 1) / courseCount);
+            } else {
+                map.put("sumscore", sumscore);
+            }
+
+        }
         IPage<Map<String, Object>> page = new Page<>();
         page.setCurrent(current);
         page.setSize(size);

@@ -15,7 +15,7 @@ public interface IStudentScoreService extends IService<StudentScore> {
 
     boolean updateEmpScore(int cid, double grade, int sid, int type);
 
-    List<Course> getAllEntity(int eid, int type);
+    List<Course> getAllEntity(int eid);
 
     List<Course> getStudentCourses(int sid);
 
