@@ -42,7 +42,7 @@ public class TestStucentScoreService {
 
     @Test
     public void getAllEntity(){
-        List<Course> list = scoreService.getAllEntity(1,0);
+        List<Course> list = scoreService.getAllEntity(1);
         System.out.println(list.size());
     }
 
