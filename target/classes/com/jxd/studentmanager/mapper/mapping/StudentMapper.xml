@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--接口的全路径，用于关联dao层接口-->
+<mapper namespace="com.jxd.studentmanager.mapper.IStudentMapper">
+    <select id="getStudentPage" resultType="Student">
+        select * from student
+        <where>
+            <if test="sname != null and sname != ''">
+                sname like concat('%',#{sname},'%')
+            </if>
+            <if test="tid != 0">
+                and tid = #{tid}
+            </if>
+        </where>
+        <if test="pageSize != 0">
+            limit #{pageStart},#{pageSize}
+        </if>
+    </select>
+    <select id="getScoreWithCourse" resultType="java.util.HashMap">
+        select a.*,b.* from
+        (select s.sname,s.sex,s.tid,s.school,s.address,s.nation,s.birthday,s.marry,s.phone,m.* from student s left join
+        (select sid,ss.eid,
+        <foreach collection="courseList" item="course" separator=",">
+            sum(case when cid = #{course.cid} then score else 0 end) z#{course.cid}
+        </foreach>
+        from studentscore ss  where type = -1
+        group by sid order by sid)m on s.sid=m.sid) a left join (
+        select sid
+        ,max(case when type = 0 then content else 0 end) s1
+        ,max(case when type = 1 then content else 0 end) s2
+        ,max(case when type = 2 then content else 0 end) s3
+        ,max(case when type = 3 then content else 0 end) s4
+        ,max(case when type = 4 then content else 0 end) s5
+        from appraise
+        group by sid) b on a.sid=b.sid
+        <where>
+            <if test="tid != 0">
+                and tid=#{tid}
+            </if>
+            <if test="sname != null and sname != ''">
+                and sname like concat('%',#{sname},'%')
+            </if>
+        </where>
+
+        <if test="pageSize != 0">
+            limit #{pageStart},#{pageSize}
+        </if>
+    </select>
+    <select id="getAllScoreWithCourse" resultType="java.util.HashMap">
+        select a.*,b.* from
+        (select s.sname,s.sex,s.tid,s.school,s.address,s.nation,s.birthday,s.marry,s.phone,m.* from student s left join
+        (select sid,ss.eid,
+        <foreach collection="courseList" item="course" separator=",">
+            sum(case when cid = #{course.cid} then score else 0 end) z#{course.cid}
+        </foreach>
+        from studentscore ss  where type = -1
+        group by sid order by sid)m on s.sid=m.sid) a left join (
+        select sid
+        ,max(case when type = 0 then content else 0 end) s1
+        ,max(case when type = 1 then content else 0 end) s2
+        ,max(case when type = 2 then content else 0 end) s3
+        ,max(case when type = 3 then content else 0 end) s4
+        ,max(case when type = 4 then content else 0 end) s5
+        from appraise
+        group by sid) b on a.sid=b.sid
+        <where>
+            <if test="tid != 0">
+                and tid=#{tid}
+            </if>
+            <if test="sname != null and sname != ''">
+                and sname like concat('%',#{sname},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getOneByEid" resultType="com.jxd.studentmanager.model.Student">
+        select * from student where eid = #{eid}
+    </select>
+
+</mapper>
