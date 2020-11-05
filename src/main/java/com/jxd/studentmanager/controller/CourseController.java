@@ -47,6 +47,12 @@ public class CourseController {
         return courseService.getCourseTerm(tid);
     }
 
+    @RequestMapping(value = "getCoursesTerm",produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public List<Map<String,Object>> getCoursesTerm (int tid){
+        return courseService.getCourseScoreTerm(tid);
+    }
+
     /**
      * 老师往课程表中批量插入课程
      * @param courses

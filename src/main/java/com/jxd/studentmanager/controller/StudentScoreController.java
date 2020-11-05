@@ -295,7 +295,7 @@ public class StudentScoreController {
         Map<String,Object> map = new HashMap<>();
         int courseCount = studentScores.size();
         for (StudentScore studentScore:studentScores){
-            map.put("z"+studentScore.getCid(),studentScore.getScore());
+            map.put(Integer.toString(studentScore.getCid()),studentScore.getScore());
             if (studentScore.getScore() >= 0) {
                 sumscore += studentScore.getScore();
             } else {
