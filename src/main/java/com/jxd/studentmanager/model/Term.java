@@ -18,7 +18,7 @@ public class Term {
 
     private String tname;
     private String tdate;
-    private String eid;     //负责老师的员工编号
+    private int eid;     //负责老师的员工编号
 
     public int getTid() {
         return tid;
@@ -44,11 +44,11 @@ public class Term {
         this.tdate = tdate;
     }
 
-    public String getEid() {
+    public int getEid() {
         return eid;
     }
 
-    public void setEid(String eid) {
+    public void setEid(int eid) {
         this.eid = eid;
     }
 }

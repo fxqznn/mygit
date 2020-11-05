@@ -43,6 +43,8 @@ public class StudentScoreController {
     private IDeptCourseService deptCourseService;
     @Autowired
     private ICourseService courseService;
+    @Autowired
+    private ITermService termService;
 
 
     /**
@@ -242,32 +244,31 @@ public class StudentScoreController {
     public IPage<Map<String, Object>> getCourseWithScore(int current, int size, String snamelike, int tid) {
         List<Map<String, Object>> courseWithScore_page = studentService.getScoreWithCourse(current, size, snamelike, tid);
         List<Map<String, Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
-
+        boolean flag = true;
         QueryWrapper queryCourse = new QueryWrapper();
         queryCourse.eq("tid", tid);
         List<Course> courses = termCourseService.list(queryCourse);
         int courseCount = courses.size();
-        for (Map map : courseWithScore_page) {
-            double sumscore = -1;
+        for(Map map:courseWithScore_page){
+            double sumscore = 0;
             QueryWrapper queryWrapper = new QueryWrapper();
             queryWrapper.eq("sid", map.get("sid"));
             queryWrapper.eq("type", -1);
             List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
             for (StudentScore studentScore : studentScores) {
+                map.put("z"+studentScore.getCid(),studentScore.getScore());
                 if (studentScore.getScore() >= 0) {
                     sumscore += studentScore.getScore();
                 } else {
-                    courseCount = 0;
-                    sumscore = -1;
-                    break;
+                    flag = false;
+                    continue;
                 }
             }
-            if (sumscore >= 0) {
-                map.put("sumscore", (sumscore + 1) / courseCount);
+            if (flag) {
+                map.put("sumscore", sumscore / courseCount);
             } else {
-                map.put("sumscore", sumscore);
+                map.put("sumscore", -1);
             }
-
         }
         IPage<Map<String, Object>> page = new Page<>();
         page.setCurrent(current);
@@ -275,6 +276,41 @@ public class StudentScoreController {
         page.setTotal(courseWithScore.size());
         page.setRecords(courseWithScore_page);
         return page;
+    }
+
+    @RequestMapping(value = "getStudentScoresBySid",produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public List<Map<String,Object>> getStudentScoresBySid(int sid,int tid){
+        double sumscore = 0;
+        boolean flag = true;
+        Term term = termService.getById(tid);
+        Map<String,Object> emp = empService.showManager(term.getEid());
+        List<Map<String,Object>> studentScoresBySid = new ArrayList<>();
+        QueryWrapper queryWrapper = new QueryWrapper();
+        Map<String,Object> queryMap = new HashMap<>();
+        queryMap.put("sid",sid);
+        queryMap.put("type",-1);
+        queryWrapper.allEq(queryMap);
+        List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
+        Map<String,Object> map = new HashMap<>();
+        int courseCount = studentScores.size();
+        for (StudentScore studentScore:studentScores){
+            map.put("z"+studentScore.getCid(),studentScore.getScore());
+            if (studentScore.getScore() >= 0) {
+                sumscore += studentScore.getScore();
+            } else {
+                flag = false;
+            }
+        }
+        if (flag) {
+            map.put("sumscore", sumscore / courseCount);
+        } else {
+            map.put("sumscore", -1);
+        }
+        map.put("tname",term.getTname());
+        map.put("ename",emp.get("ename"));
+        studentScoresBySid.add(map);
+        return studentScoresBySid;
     }
 
     @RequestMapping(value = "showAbilityScore", produces = "application/json;charset=utf-8")
