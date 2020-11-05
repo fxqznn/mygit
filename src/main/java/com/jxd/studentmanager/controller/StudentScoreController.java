@@ -184,7 +184,6 @@ public class StudentScoreController {
     /**
      * 根据根据经理工号和成绩类型动态查询表头
      * @param eid  经理工号
-     * @param type 成绩类型 0 ：转正   1：第一年  2：第二年  3：第三年
      * @return
      */
     @RequestMapping("/getAllEntity")
@@ -274,11 +273,12 @@ public class StudentScoreController {
             map.put("eid",emp.getEid());
             map.put("ename",emp.getEname());
             map.put("job",emp.getJob());
+            double sum = 0;
             for (StudentScore ss : scoreList){
-
                 map.put(Integer.toString(ss.getCid()),Double.toString(ss.getScore()));
-                double sum = 0;
                 sum+=ss.getScore();
+            }
+            if(sum>0){
                 double avg = sum/scoreList.size();
                 map.put("avg",avg);
             }
