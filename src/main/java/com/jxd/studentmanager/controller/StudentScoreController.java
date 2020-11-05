@@ -155,13 +155,19 @@ public class StudentScoreController {
     @RequestMapping("/getScoreCourses/{sid}")
     @ResponseBody
     public List<Map<String, Object>> getScoreCourses(@PathVariable("sid") int sid) {
-        return studentScoreService.selectCourses(sid);
+        Map<String, Object> map = studentScoreService.selectCoursesScore(sid);
+        List<Map<String, Object>> list = new ArrayList<>();
+        list.add(map);
+        return list;
     }
 
     @RequestMapping("/getScoreAbilities/{sid}/{type}")
     @ResponseBody
     public List<Map<String, Object>> getScoreAbilities(@PathVariable("sid") int sid, @PathVariable("type") int type) {
-        return studentScoreService.selectAbilities(sid, type);
+        Map<String, Object> map = studentScoreService.selectAbilitiesScore(sid, type);
+        List<Map<String, Object>> list = new ArrayList<>();
+        list.add(map);
+        return list;
     }
 
     /**

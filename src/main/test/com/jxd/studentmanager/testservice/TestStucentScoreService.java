@@ -52,4 +52,12 @@ public class TestStucentScoreService {
         System.out.println(map.toString());
     }
 
+    @Test
+    public void getStudentCourses(){
+        List<Course> list = scoreService.getStudentCourses(1);
+        for (Course course:list) {
+            System.out.println(course.getCid());
+        }
+    }
+
 }
