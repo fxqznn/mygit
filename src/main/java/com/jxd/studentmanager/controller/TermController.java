@@ -55,6 +55,12 @@ public class TermController {
         return list;
     }
 
+    @RequestMapping(value = "getAllTermForStudent")
+    @ResponseBody
+    public List<Term> getAllTermForStudent(){
+        return termService.list();
+    }
+
     /**
      * 获得学期为修改学期信息做准备
      * 查出学期已经选择的课程

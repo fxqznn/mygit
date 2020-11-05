@@ -17,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * @ClassName StudentController
  * @Description TODO
@@ -45,6 +47,9 @@ public class StudentController {
     @RequestMapping("/updateSelf")
     @ResponseBody
     public String updateSelf(Student student) {
+        if("".equals(student.getBirthday())){
+            student.setBirthday(null);
+        }
         boolean flag = studentService.updateById(student);
         if (flag) {
             return "修改信息成功";
@@ -98,11 +103,30 @@ public class StudentController {
     @ResponseBody
     public String addStudent(Student student){
         boolean flag = studentService.save(student);
+        Emp emp = new Emp();
+        emp.setSid(student.getSid());
+        emp.setEname(student.getSname());
+        empService.save(emp);
+        student.setEid(emp.getEid());
+        studentService.updateById(student);
+        User user = new User();
+        user.setUname(emp.getEid());
+        user.setRole(3);
+        userService.save(user);
         if(flag){
             return "success";
         } else {
             return "fail";
         }
+    }
+
+    @RequestMapping(value = "addStudents")
+    @ResponseBody
+    public String addStudents(List<Student> students){
+        for(Student student : students){
+            addStudent(student);
+        }
+        return "success";
     }
 
     /**
