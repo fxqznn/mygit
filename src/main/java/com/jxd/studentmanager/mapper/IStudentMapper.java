@@ -16,4 +16,7 @@ public interface IStudentMapper extends BaseMapper<Student> {
                                                 @Param("sname") String sname,@Param("tid") int tid);
     List<Map<String,Object>> getAllScoreWithCourse(@Param("courseList") List<Course> courses,
                                                    @Param("sname") String sname,@Param("tid") int tid);
+
+    Student getOneByEid(@Param("eid") int eid);
+
 }

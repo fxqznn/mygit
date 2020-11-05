@@ -73,4 +73,9 @@
             </if>
         </where>
     </select>
+
+    <select id="getOneByEid" resultType="com.jxd.studentmanager.model.Student">
+        select * from student where eid = #{eid}
+    </select>
+
 </mapper>

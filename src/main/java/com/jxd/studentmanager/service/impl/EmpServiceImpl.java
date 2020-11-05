@@ -37,4 +37,9 @@ public class EmpServiceImpl extends ServiceImpl<IEmpMapper, Emp> implements IEmp
 
     @Override
     public int getSid(int eid){return iem.getSid(eid);}
+
+    @Override
+    public Map showManager(int eid) {
+        return iem.showManager(eid);
+    }
 }

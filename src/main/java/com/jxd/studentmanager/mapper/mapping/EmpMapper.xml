@@ -35,4 +35,10 @@
         select sid from student where eid = #{eid}
     </select>
 
+    <select id="showManager" resultType="java.util.Map">
+        select dname,ename from
+        (select e.*,dname from emp e left join dept d on e.did = d.did) t1
+        where eid = #{eid}
+    </select>
+
 </mapper>

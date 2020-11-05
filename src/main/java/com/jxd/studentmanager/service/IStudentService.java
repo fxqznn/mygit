@@ -18,4 +18,6 @@ public interface IStudentService extends IService<Student>{
     List<Map<String,Object>> getScoreWithCourse(int page, int size,
                                                 String sname, int tid);
     List<Map<String,Object>> getAllScoreWithCourse(String sname, int tid);
+    Student getStudentByEid(int eid);
+
 }

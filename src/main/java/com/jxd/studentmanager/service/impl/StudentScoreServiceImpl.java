@@ -40,8 +40,8 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     }
 
     @Override
-    public List<Course> getAllEntity(int eid, int type) {
-        return studentScoreMapper.getAllEntity(eid,type);
+    public List<Course> getAllEntity(int eid) {
+        return studentScoreMapper.getAllEntity(eid);
     }
 
     @Override

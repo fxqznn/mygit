@@ -235,5 +235,10 @@ public class EmpController {
         return "success";
     }
 
+    @RequestMapping("/getManager")
+    @ResponseBody
+    public Map getManager(int eid){
+        return empService.showManager(eid);
+    }
 
 }

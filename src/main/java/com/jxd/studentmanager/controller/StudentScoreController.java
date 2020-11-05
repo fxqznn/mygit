@@ -189,16 +189,16 @@ public class StudentScoreController {
      */
     @RequestMapping("/getAllEntity")
     @ResponseBody
-    public List<Map<String,Object>> getAllEntity(int eid,int type){
+    public List<Map<String,Object>> getAllEntity(int eid){
         List<Map<String,Object>> list = new ArrayList<>();
-        List<Course> courseList = studentScoreService.getAllEntity(eid,type);
+        List<Course> courseList = studentScoreService.getAllEntity(eid);
         for (Course course : courseList){
             String cid = Integer.toString(course.getCid());
             Map<String,Object> map = new HashMap<>();
             map.put("cid",cid);
             map.put("cname",course.getCname());
             list.add(map);
-    }
+        }
         return list;
     }
 

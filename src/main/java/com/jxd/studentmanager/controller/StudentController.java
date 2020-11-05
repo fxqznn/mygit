@@ -38,6 +38,13 @@ public class StudentController {
     @Autowired
     private IStudentScoreService studentScoreService;
 
+    @RequestMapping("/getStudent")
+    @ResponseBody
+    public Student getStudent(int eid){
+        return studentService.getStudentByEid(eid);
+    }
+
+
     @RequestMapping("/getSelf")
     @ResponseBody
     public Student getSelf(int sid) {

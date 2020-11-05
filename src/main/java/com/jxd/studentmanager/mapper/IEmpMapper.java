@@ -15,4 +15,6 @@ public interface IEmpMapper extends BaseMapper<Emp> {
     List<StudentScore> selectScores(@Param("type") int type, @Param("eid") int eid);
 
     int getSid(@Param("eid") int eid);
+
+    Map showManager(@Param("eid") int eid);
 }

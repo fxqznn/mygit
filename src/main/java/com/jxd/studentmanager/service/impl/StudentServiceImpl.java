@@ -48,4 +48,11 @@ public class StudentServiceImpl extends ServiceImpl<IStudentMapper, Student> imp
         queryWrapper.eq("type",0);
         List<Course> courses = courseMapper.selectList(queryWrapper);
         return studentMapper.getAllScoreWithCourse(courses,sname,tid);
-    }}
+    }
+
+    @Override
+    public Student getStudentByEid(int eid) {
+        return studentMapper.getOneByEid(eid);
+    }
+
+}
