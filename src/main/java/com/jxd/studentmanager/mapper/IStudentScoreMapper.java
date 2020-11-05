@@ -25,5 +25,7 @@ public interface IStudentScoreMapper extends BaseMapper<StudentScore> {
 
     List<Course> getAllEntity(@Param("eid") int eid);
 
+    List<Course> getStudentCourses(@Param("sid") int sid);
+
     int insertSs(StudentScore ss);
 }

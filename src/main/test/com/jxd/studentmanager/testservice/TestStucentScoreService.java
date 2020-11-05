@@ -42,8 +42,22 @@ public class TestStucentScoreService {
 
     @Test
     public void getAllEntity(){
-        List<Course> list = scoreService.getAllEntity(1,0);
+        List<Course> list = scoreService.getAllEntity(1);
         System.out.println(list.size());
+    }
+
+    @Test
+    public void getScoreCourses(){
+        Map<String,Object> map = scoreService.selectCoursesScore(1);
+        System.out.println(map.toString());
+    }
+
+    @Test
+    public void getStudentCourses(){
+        List<Course> list = scoreService.getStudentCourses(1);
+        for (Course course:list) {
+            System.out.println(course.getCid());
+        }
     }
 
 }

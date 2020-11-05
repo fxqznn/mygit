@@ -15,6 +15,9 @@ import java.util.Map;
  */
 public interface IStudentService extends IService<Student>{
     List<Student> getStudentPage(int page, int size, int tid, String sname);
+
+    int getByUser(int uid);
+
     List<Map<String,Object>> getScoreWithCourse(int page, int size,
                                                 String sname, int tid);
     List<Map<String,Object>> getAllScoreWithCourse(String sname, int tid);

@@ -2,7 +2,6 @@ package com.jxd.studentmanager.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jxd.studentmanager.mapper.IEmpMapper;
-import com.jxd.studentmanager.model.Course;
 import com.jxd.studentmanager.model.Emp;
 import com.jxd.studentmanager.model.StudentScore;
 import com.jxd.studentmanager.service.IEmpService;

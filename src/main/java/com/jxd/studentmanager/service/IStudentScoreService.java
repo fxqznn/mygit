@@ -13,9 +13,15 @@ public interface IStudentScoreService extends IService<StudentScore> {
 
     List<Map<String, Object>> selectAbilities(int sid, int type);
 
-    boolean updateEmpScore(int cid,double grade,int sid,int type);
+    boolean updateEmpScore(int cid, double grade, int sid, int type);
 
     List<Course> getAllEntity(int eid);
+
+    List<Course> getStudentCourses(int sid);
+
+    Map<String,Object> selectCoursesScore(int sid);
+
+    Map<String,Object> selectAbilitiesScore(@Param("sid") int sid, @Param("type") int type);
 
     int insertSs(StudentScore ss);
 }

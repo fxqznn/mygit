@@ -6,5 +6,6 @@ import org.apache.ibatis.annotations.Param;
 
 public interface IAppraiseMapper extends BaseMapper<Appraise> {
     int addAppraise(Appraise appraise);
-    String getAppraise(@Param("eid")int eid,@Param("type") int type);
+
+    String getAppraise(@Param("eid") int eid, @Param("type") int type);
 }

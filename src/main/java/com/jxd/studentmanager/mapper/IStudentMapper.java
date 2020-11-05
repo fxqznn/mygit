@@ -19,4 +19,5 @@ public interface IStudentMapper extends BaseMapper<Student> {
 
     Student getOneByEid(@Param("eid") int eid);
 
+    int getByUser(int uid);
 }

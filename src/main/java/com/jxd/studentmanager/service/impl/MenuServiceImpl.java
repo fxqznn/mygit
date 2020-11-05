@@ -73,7 +73,7 @@ public class MenuServiceImpl extends ServiceImpl<IMenuMapper, Menu> implements I
         for (Map<String, Object> nav : childList) {
             String tempId = String.valueOf(nav.get("mid"));
             //nav.setChildren(,getChild(tempId, allMenu));
-            nav.put("child", getChild(tempId, allMenu));
+            nav.put("children", getChild(tempId, allMenu));
         }
         //Collections.sort(childList,order());//排序
         //如果节点下没有子节点，返回一个空List（递归退出）
