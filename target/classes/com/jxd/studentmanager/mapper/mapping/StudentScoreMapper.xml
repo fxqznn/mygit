@@ -32,12 +32,11 @@
     </resultMap>
 
 
-
     <select id="selectCourses" resultMap="courses">
         select t3.*,c.cname from
         (select t2.*,e.ename from
-        (select t1.*,t.tname,t.eid from
-        (select ss.ssid,ss.cid,ss.score,ss.sid,s.tid from studentscore ss
+        (select t1.*,t.tname from
+        (select ss.ssid,ss.cid,ss.score,ss.sid,ss.eid,s.tid from studentscore ss
         left join student s on s.sid = ss.sid where ss.sid = #{sid} and ss.type=-1 )
          t1 left join term t on t1.tid = t.tid) t2 left
         join emp e on t2.eid = e.eid) t3 left join course c on c.cid = t3.cid
@@ -56,12 +55,19 @@
     </update>
 
 
-
     <select id="getAllEntity" resultMap="entity">
         select t1.cid,cname from
         (select ss.*,c.cname from studentscore ss left join
         course c on c.cid=ss.cid where  ss.type = #{type}) t1
         left join emp e on e.eid = t1.eid where e.eid = #{eid}
+    </select>
+
+    <select id="getStudentCourses" resultMap="entity">
+        select t2.cid,c.cname from
+        (select t1.*,tc.cid from
+        (select s.tid from student s where s.sid = #{sid}) t1
+        left join termcourse tc on tc.tid=t1.tid) t2 left join course c
+        on c.cid = t2.cid
     </select>
 
     <insert id="insertSs" parameterType="com.jxd.studentmanager.model.StudentScore">

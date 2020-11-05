@@ -65,13 +65,13 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
         map.put("tname", list.get(0).get("tname"));
         double avg = 0;
         for (Map map1 : list) {
-            map.put((String) map1.get("cid"), map1.get("score"));
+            map.put(map1.get("cid").toString(), map1.get("score"));
             double sum = 0;
             sum += (double) map1.get("score");
             avg = sum / list.size();
         }
         map.put("avg", avg);
-        return null;
+        return map;
     }
 
     @Override

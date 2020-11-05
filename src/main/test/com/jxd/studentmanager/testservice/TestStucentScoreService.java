@@ -46,4 +46,10 @@ public class TestStucentScoreService {
         System.out.println(list.size());
     }
 
+    @Test
+    public void getScoreCourses(){
+        Map<String,Object> map = scoreService.selectCoursesScore(1);
+        System.out.println(map.toString());
+    }
+
 }

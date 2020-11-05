@@ -36,4 +36,8 @@ public class TestStudentScoreMapper {
         List<Map<String, Object>> list = scoreMapper.selectAbilities(1, 0);
         System.out.println(list.toString());
     }
+
+    @Test
+    public void selectCoursesScore(){
+    }
 }
