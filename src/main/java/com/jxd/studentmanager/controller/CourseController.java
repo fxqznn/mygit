@@ -11,6 +11,7 @@ import com.jxd.studentmanager.service.ITermCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
@@ -219,4 +220,11 @@ public class CourseController {
         }
         return "success";
     }
+
+    @RequestMapping("/showAllEntity")
+    @ResponseBody
+    public List<Map> showAllEntity(){
+        return courseService.selectCourseByType();
+    }
+
 }

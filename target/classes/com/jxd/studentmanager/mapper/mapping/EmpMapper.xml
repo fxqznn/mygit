@@ -41,4 +41,8 @@
         where eid = #{eid}
     </select>
 
+    <select id="selectEmpByRole" resultType="Emp">
+        select eid,ename,job,did,sid,isdel from emp e left join user u on e.eid = u.uname where role = #{role}
+    </select>
+
 </mapper>

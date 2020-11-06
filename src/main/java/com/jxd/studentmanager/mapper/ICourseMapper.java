@@ -18,4 +18,6 @@ public interface ICourseMapper extends BaseMapper<Course> {
 
     List<Course> selectCoursesByDid(int did);
 
+    List<Map> selectCourseByType();
+
 }

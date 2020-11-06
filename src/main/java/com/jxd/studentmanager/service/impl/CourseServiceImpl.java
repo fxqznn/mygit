@@ -96,4 +96,9 @@ public class CourseServiceImpl extends ServiceImpl<ICourseMapper, Course> implem
 
         return CnameWithCid;
     }
+
+    @Override
+    public List<Map> selectCourseByType() {
+        return courseMapper.selectCourseByType();
+    }
 }

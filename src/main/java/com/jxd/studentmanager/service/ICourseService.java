@@ -14,4 +14,6 @@ public interface ICourseService extends IService<Course> {
 
     List<Map<String,Object>> getCourseTerm(int tid);
     List<Map<String,Object>> getCourseScoreTerm(int tid);
+
+    List<Map> selectCourseByType();
 }
