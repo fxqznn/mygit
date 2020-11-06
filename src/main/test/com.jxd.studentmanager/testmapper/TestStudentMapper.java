@@ -25,4 +25,9 @@ public class TestStudentMapper {
     @Resource
     private IStudentMapper studentMapper;
 
+    @Test
+    public void getByUser(){
+        System.out.println(studentMapper.getByUser(16));
+    }
+
 }

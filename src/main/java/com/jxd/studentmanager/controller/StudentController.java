@@ -16,7 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @ClassName StudentController
@@ -139,6 +147,28 @@ public class StudentController {
         }
     }
 
+    @RequestMapping("/modifyDetails")
+    @ResponseBody
+    public String modifyDetails(Student student) {
+        Student s = studentService.getById(student.getSid());
+        boolean flag = studentService.updateById(student);
+        boolean flag_emp = true;
+        if (!student.getSname().equals(s.getSname())) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("sid", student.getSid());
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.allEq(map, true);
+            Emp emp = empService.getOne(queryWrapper);
+            emp.setEname(student.getSname());
+            flag_emp = empService.updateById(emp);
+        }
+        if (flag && flag_emp) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
     /**
      * 删除学生，删除学生的成绩、员工信息，用户信息
      *
@@ -177,4 +207,59 @@ public class StudentController {
         return "success";
     }
 
+    @RequestMapping(value = "upload", produces = "text/html;charset=utf-8")
+    @ResponseBody
+    public String imgUpload(@RequestParam("photo") MultipartFile file) {
+        String path = "F://Java//mygit//src//main//assests";
+        File file_save = new File(path);
+        if (!file_save.exists() && !file_save.isDirectory()) {
+            file_save.mkdir();
+        }
+        //处理文件名，添加UUID，保证每个文件名全局唯一
+        //获取源文件名
+        String fname_old = file.getOriginalFilename();
+        //获取UUID,全局唯一32位的字符串，包含数字字母和-
+        String uuid = UUID.randomUUID().toString();
+        String fname_new = uuid + fname_old;
+
+        File savefile = new File(path, fname_new);
+        try {
+            file.transferTo(savefile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fname_new;
+    }
+
+    @RequestMapping("/delImg")
+    @ResponseBody
+    public String delImg(String imgName) {
+        String path = "F://Java//mygit//src//main//assests";
+        if (imgName == null || imgName.length() == 0) {
+            return "none";
+        }
+        File file = new File(path, imgName);
+        if (!file.exists()) {
+            //文件不存在
+            return "none";
+        }
+        if (file.delete()) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+    @RequestMapping("/updatePic/{sid}/{pic}")
+    @ResponseBody
+    public String updatePic(@PathVariable("sid") int sid, @PathVariable("pic") String pic) {
+        Student student = studentService.getById(sid);
+        student.setPic(pic);
+        boolean flag = studentService.updateById(student);
+        if (flag) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
 }
