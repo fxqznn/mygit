@@ -144,6 +144,12 @@ public class EmpController {
         return empService.getById(eid);
     }
 
+    @RequestMapping(value = "getEmpsByRole")
+    @ResponseBody
+    public List<Emp> getEmpsByRole(int role){
+        return empService.getEmpByRole(role);
+    }
+
     /**
      * 根据员工的id删除员工信息,如果员工是经理或者老师，有打分的情况不允许删除
      * 如果员工是学生，则删除学生账号，删除学生的分数记录

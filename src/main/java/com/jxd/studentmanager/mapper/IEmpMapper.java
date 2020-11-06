@@ -17,4 +17,6 @@ public interface IEmpMapper extends BaseMapper<Emp> {
     int getSid(@Param("eid") int eid);
 
     Map showManager(@Param("eid") int eid);
+
+    List<Emp> selectEmpByRole(int role);
 }

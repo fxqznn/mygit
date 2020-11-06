@@ -150,6 +150,12 @@ public class CourseController {
         return courseService.page(page,wrapper);
     }
 
+    @RequestMapping(value = "getCoursesForTermAdd")
+    @ResponseBody
+    public List<Course> getCoursesForTermAdd(){
+        return courseService.list();
+    }
+
     @RequestMapping(value = "getCourseById")
     @ResponseBody
     public Course getCourse(int cid){
@@ -163,7 +169,7 @@ public class CourseController {
         if(flag){
             return "success";
         } else {
-            return "true";
+            return "fail";
         }
     }
 
@@ -201,7 +207,7 @@ public class CourseController {
         if(flag){
             return "success";
         } else {
-            return "true";
+            return "fail";
         }
     }
 
