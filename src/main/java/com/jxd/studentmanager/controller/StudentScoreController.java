@@ -319,6 +319,7 @@ public class StudentScoreController {
         List<Map<Object, Object>> courseWithScore = new ArrayList<>();
         List<Emp> empList = empService.selectEmp(eid, ename);
         for (Emp emp : empList) {
+            insertStudentScoreByEid(emp.getEid(),type);
             Map<Object, Object> map = new HashMap<>();
             List<StudentScore> scoreList = empService.selectScores(type, emp.getEid());
             map.put("eid", emp.getEid());
