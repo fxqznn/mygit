@@ -325,14 +325,16 @@ public class StudentScoreController {
             map.put("eid", emp.getEid());
             map.put("ename", emp.getEname());
             map.put("job", emp.getJob());
+            double sum = 0;
             for (StudentScore ss : scoreList) {
 
                 map.put(Integer.toString(ss.getCid()), Double.toString(ss.getScore()));
-                double sum = 0;
+
                 sum += ss.getScore();
-                double avg = sum / scoreList.size();
-                map.put("avg", avg);
+
             }
+            double avg = sum / scoreList.size();
+            map.put("avg", avg);
             courseWithScore.add(map);
         }
         return courseWithScore;
