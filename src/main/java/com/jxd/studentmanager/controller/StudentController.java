@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,6 +27,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import java.util.List;
 
 /**
  * @ClassName StudentController
@@ -69,6 +72,9 @@ public class StudentController {
     @ResponseBody
     public String updateSelf(Student student) {
         boolean flag = studentService.updateById(student);
+        if("".equals(student.getBirthday())){
+            student.setBirthday(null);
+        }
         if (flag) {
             return "修改信息成功";
         } else {
@@ -122,6 +128,16 @@ public class StudentController {
     @ResponseBody
     public String addStudent(Student student) {
         boolean flag = studentService.save(student);
+        Emp emp = new Emp();
+        emp.setEname(student.getSname());
+        emp.setSid(student.getSid());
+        empService.save(emp);
+        student.setEid(emp.getEid());
+        studentService.updateById(student);
+        User user = new User();
+        user.setRole(3);
+        user.setUname(emp.getEid());
+        userService.save(user);
         if (flag) {
             return "success";
         } else {
@@ -129,30 +145,13 @@ public class StudentController {
         }
     }
 
-    /**
-     * 管理员修改学生信息，只修改tid,sname两个字段
-     * 修改后，将修改的sname字段同步到emp中ename字段
-     *
-     * @param student
-     * @return
-     */
-    @RequestMapping(value = "editStudent")
+    @RequestMapping(value = "addStudents")
     @ResponseBody
-    public String editStudent(Student student) {
-        UpdateWrapper<Student> wrapper = new UpdateWrapper<>();
-        wrapper.setSql("sname = '" + student.getSname() + "' and tid = " + student.getTid());
-        boolean flag = studentService.updateById(student);
-        UpdateWrapper<Emp> wrapper1 = new UpdateWrapper<>();
-        wrapper1.set("ename", student.getSname());
-        Emp emp = new Emp();
-        emp.setEid(student.getEid());
-        empService.update(emp, wrapper1);
-
-        if (flag) {
-            return "success";
-        } else {
-            return "fail";
+    public String addStudents(@RequestBody List<Student> students){
+        for(Student student : students){
+            addStudent(student);
         }
+        return "success";
     }
 
     @RequestMapping("/modifyDetails")

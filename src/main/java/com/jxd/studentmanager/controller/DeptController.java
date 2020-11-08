@@ -49,14 +49,25 @@ public class DeptController {
      */
     @RequestMapping(value = "getAllDept")
     @ResponseBody
-    public IPage<Dept> getAllDept(Page<Dept> page, String dname) {
-        QueryWrapper<Dept> wrapper = new QueryWrapper<>();
-        if (dname == null || "".equals(dname)) {
-            wrapper.eq("isdel", 0);
-            return deptService.page(page, wrapper);
+    public IPage<Dept> getAllDept(Page<Dept> page, String dname , int isdel, int eid) {
+        if(eid == 0){
+            QueryWrapper<Dept> wrapper = new QueryWrapper<>();
+            if (dname == null || "".equals(dname)) {
+                wrapper.eq("isdel", isdel);
+                return deptService.page(page, wrapper);
+            } else {
+                wrapper.like("dname", dname).eq("isdel", isdel);
+                return deptService.page(page, wrapper);
+            }
         } else {
-            wrapper.like("dname", dname).eq("isdel", 0);
-            return deptService.page(page, wrapper);
+            QueryWrapper<Dept> wrapper = new QueryWrapper<>();
+            if (dname == null || "".equals(dname)) {
+                wrapper.eq("isdel", isdel).eq("dheader",eid);
+                return deptService.page(page, wrapper);
+            } else {
+                wrapper.like("dname", dname).eq("isdel", isdel).eq("dheader",eid);
+                return deptService.page(page, wrapper);
+            }
         }
     }
 
@@ -68,21 +79,8 @@ public class DeptController {
 
     @RequestMapping(value = "getDeptById")
     @ResponseBody
-    public Map<String, Object> getDeptById(int did) {
-        Map<String,Object> map = new HashMap<>();
-
-        Dept dept = deptService.getById(did);
-        map.put("dept",dept);
-
-        QueryWrapper<Course> wrapper = new QueryWrapper<>();
-        wrapper.eq("isdel",0).ne("type",0);
-        List<Course> courses = courseService.list(wrapper);
-        map.put("courses",courses);
-
-        List<Course> checkedCourses = courseService.selectCoursesByDid(did);
-        map.put("checkedCourses",checkedCourses);
-
-        return map;
+    public Dept getDeptById(int did) {
+        return deptService.getById(did);
     }
 
     @RequestMapping(value = "addDept")
@@ -90,12 +88,6 @@ public class DeptController {
     public String addDept(Dept dept, List<Course> courses) {
         boolean flag = deptService.save(dept);
 
-        for(Course course : courses) {
-            DeptCourse deptCourse = new DeptCourse();
-            deptCourse.setDid(dept.getDid());
-            deptCourse.setCid(course.getCid());
-            deptCourseService.save(deptCourse);
-        }
         if (flag) {
             return "success";
         } else {
@@ -107,45 +99,6 @@ public class DeptController {
     @ResponseBody
     public String editDept(Dept dept, List<Course> checkCourses) {
         boolean flag = deptService.updateById(dept);
-
-        List<Course> oldCheckedCourses = courseService.selectCoursesByDid(dept.getDid());
-
-        //如果取消选择课程，需要删除学期课程中的信息,
-        //旧的选择课程中有，新的没有
-        for(Course oldCourse : oldCheckedCourses){
-            boolean isexist = false;
-            for(Course newCourse : checkCourses){
-                if(newCourse.getCid() == oldCourse.getCid()){
-                    isexist = true;
-                    break;
-                }
-            }
-            if(isexist == false){
-                UpdateWrapper<DeptCourse> wrapper = new UpdateWrapper<>();
-                wrapper.eq("did",dept.getDid()).eq("cid",oldCourse.getCid());
-                deptCourseService.remove(wrapper);
-            }
-        }
-
-        //新添加课程，需要在学期课程中添加信息
-        //新的选择课程中有，旧的没有
-        for(Course newCourse : checkCourses){
-            boolean isexist = false;
-            for(Course oldCourse : oldCheckedCourses){
-                if(newCourse.getCid() == oldCourse.getCid()){
-                    isexist = true;
-                    break;
-                }
-            }
-            if(isexist == false) {
-                DeptCourse deptCourse = new DeptCourse();
-                deptCourse.setDid(dept.getDid());
-                deptCourse.setCid(newCourse.getCid());
-                deptCourseService.save(deptCourse);
-            }
-        }
-
-
         if (flag) {
             return "success";
         } else {

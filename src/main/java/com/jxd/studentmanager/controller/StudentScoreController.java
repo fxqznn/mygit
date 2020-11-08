@@ -122,6 +122,7 @@ public class StudentScoreController {
                     studentScore.setSid(sid);
                     studentScore.setCid(deptselectcourse.getCid());
                     studentScore.setType(type);
+                    studentScore.setScore(-1);
                     studentScoreService.save(studentScore);
                 }
             }
@@ -244,10 +245,15 @@ public class StudentScoreController {
     public IPage<Map<String, Object>> getCourseWithScore(int current, int size, String snamelike, int tid) {
         List<Map<String, Object>> courseWithScore_page = studentService.getScoreWithCourse(current, size, snamelike, tid);
         List<Map<String, Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
+
         boolean flag = true;
         QueryWrapper queryCourse = new QueryWrapper();
         queryCourse.eq("tid", tid);
         List<Course> courses = termCourseService.list(queryCourse);
+        List<Student> students = studentService.list(queryCourse);
+        for(Student student:students){
+            insertStudenScoreBySid(student.getSid(),-1);
+        }
         int courseCount = courses.size();
         for(Map map:courseWithScore_page){
             double sumscore = 0;
@@ -325,17 +331,34 @@ public class StudentScoreController {
             map.put("eid", emp.getEid());
             map.put("ename", emp.getEname());
             map.put("job", emp.getJob());
+            double sum = 0;
             for (StudentScore ss : scoreList) {
 
                 map.put(Integer.toString(ss.getCid()), Double.toString(ss.getScore()));
-                double sum = 0;
+
                 sum += ss.getScore();
-                double avg = sum / scoreList.size();
-                map.put("avg", avg);
+
             }
+            double avg = sum / scoreList.size();
+            map.put("avg", avg);
             courseWithScore.add(map);
         }
         return courseWithScore;
     }
 
+    @RequestMapping(value = "/getOneAbilityScore", produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public List<Map<Object,Object>> getOas(int eid,int type){
+        List<Map<Object, Object>> list = new ArrayList<>();
+        List<StudentScore> scoreList = studentScoreService.getOneEmpAbilityScore(eid, type);
+        double sum =0;
+        Map<Object, Object> map = new HashMap<>();
+        for (StudentScore studentScore : scoreList) {
+            map.put(studentScore.getCid(),studentScore.getScore());
+            sum+=studentScore.getScore();
+        }double avg = sum/scoreList.size();
+        map.put("avg",avg);
+        list.add(map);
+        return list;
+    }
 }

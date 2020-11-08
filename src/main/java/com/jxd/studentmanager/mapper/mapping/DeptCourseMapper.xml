@@ -4,4 +4,18 @@
 <!--接口的全路径，用于关联dao层接口-->
 <mapper namespace="com.jxd.studentmanager.mapper.IDeptCourseMapper">
 
+    <select id="getNotSelectedAbility" resultType="java.util.Map">
+        select cid,cname from course where type =1
+        and cid not in (select cid from deptcourse where did =
+        (select did from emp where eid = #{eid}))
+    </select>
+
+    <insert id="addAbility">
+        insert into deptcourse(did,cid) values((select did from emp where eid = #{eid}),#{cid})
+    </insert>
+
+    <delete id="delDeptCourse" >
+        delete from deptcourse where did = (select did from emp where eid = #{eid}) and cid = #{cid}
+    </delete>
+
 </mapper>

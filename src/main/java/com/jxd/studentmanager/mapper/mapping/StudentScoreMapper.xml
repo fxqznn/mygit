@@ -72,9 +72,10 @@
         on c.cid = t2.cid
     </select>
 
-    <insert id="insertSs" parameterType="com.jxd.studentmanager.model.StudentScore">
-        insert into studentscore(ssid,sid,cid,score,type,eid)
-        values(#{ssid},#{sid},#{cid},#{score},#{type},#{eid})
-    </insert>
+    <select id="getOneEmpAbilityScore" resultType="com.jxd.studentmanager.model.StudentScore">
+        select cid,score from studentscore
+        where sid =(select sid from student where eid = #{eid})
+        and type = #{type}
+    </select>
 
 </mapper>

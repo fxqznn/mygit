@@ -136,8 +136,6 @@ public class CourseController {
      * @param cname
      * @return
      */
-    @RequestMapping(value = "getAllCourse")
-    @ResponseBody
     public IPage<Course> getAllCourse(Page<Course> page, int type, String cname,int isdel){
         QueryWrapper<Course> wrapper = new QueryWrapper<>();
 
@@ -151,10 +149,62 @@ public class CourseController {
         return courseService.page(page,wrapper);
     }
 
-    @RequestMapping(value = "getCoursesForTermAdd")
+    @RequestMapping(value = "getCoursesForTerm")
     @ResponseBody
-    public List<Course> getCoursesForTermAdd(){
-        return courseService.list();
+    public List<Map<String,Object>> getCoursesForTerm(int tid){
+        List<Map<String,Object>> list = new ArrayList<>();
+        QueryWrapper<Course> courseQueryWrapper = new QueryWrapper<>();
+        courseQueryWrapper.eq("type",0);
+        List<Course> courseListlist = courseService.list(courseQueryWrapper);
+        for(Course course : courseListlist){
+            Map<String,Object> map = new HashMap<>();
+            map.put("cid",course.getCid());
+            map.put("cname",course.getCname());
+            if(course.getIsdel() == 0){
+                map.put("isdel","");
+            } else {
+                map.put("isdel","已删除");
+            }
+            QueryWrapper<TermCourse> wrapper = new QueryWrapper<>();
+            wrapper.eq("cid",course.getCid()).eq("tid",tid);
+            TermCourse termCourse = termCourseService.getOne(wrapper);
+            if(termCourse == null){
+                map.put("checked",false);
+            } else {
+                map.put("checked",true);
+            }
+            list.add(map);
+        }
+        return list;
+    }
+
+    @RequestMapping(value = "getCoursesForDept")
+    @ResponseBody
+    public List<Map<String,Object>> getCoursesForDept(int did){
+        List<Map<String,Object>> list = new ArrayList<>();
+        QueryWrapper<Course> courseQueryWrapper = new QueryWrapper<>();
+        courseQueryWrapper.eq("type",1);
+        List<Course> courseListlist = courseService.list(courseQueryWrapper);
+        for(Course course : courseListlist){
+            Map<String,Object> map = new HashMap<>();
+            map.put("cid",course.getCid());
+            map.put("cname",course.getCname());
+            if(course.getIsdel() == 0){
+                map.put("isdel","");
+            } else {
+                map.put("isdel","已删除");
+            }
+            QueryWrapper<DeptCourse> wrapper = new QueryWrapper<>();
+            wrapper.eq("cid",course.getCid()).eq("did",did);
+            DeptCourse deptCourse = deptCourseService.getOne(wrapper);
+            if(deptCourse == null){
+                map.put("checked",false);
+            } else {
+                map.put("checked",true);
+            }
+            list.add(map);
+        }
+        return list;
     }
 
     @RequestMapping(value = "getCourseById")
@@ -220,11 +270,4 @@ public class CourseController {
         }
         return "success";
     }
-
-    @RequestMapping("/showAllEntity")
-    @ResponseBody
-    public List<Map> showAllEntity(){
-        return courseService.selectCourseByType();
-    }
-
 }
