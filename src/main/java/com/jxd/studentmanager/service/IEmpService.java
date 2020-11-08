@@ -16,4 +16,6 @@ public interface IEmpService extends IService<Emp> {
     int getSid(int eid);
 
     Map showManager(int eid);
+
+    List<Emp> getEmpByRole(int role);
 }

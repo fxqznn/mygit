@@ -36,9 +36,13 @@
     </select>
 
     <select id="showManager" resultType="java.util.Map">
-        select dname,ename from
+        select dname,ename,job from
         (select e.*,dname from emp e left join dept d on e.did = d.did) t1
         where eid = #{eid}
+    </select>
+
+    <select id="selectEmpByRole" resultType="Emp">
+        select eid,ename,job,did,sid,isdel from emp e left join user u on e.eid = u.uname where role = #{role}
     </select>
 
 </mapper>

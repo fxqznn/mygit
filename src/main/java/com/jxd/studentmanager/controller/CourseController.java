@@ -11,6 +11,7 @@ import com.jxd.studentmanager.service.ITermCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
@@ -45,6 +46,12 @@ public class CourseController {
     @ResponseBody
     public List<Map<String,Object>> getCoursesByTid (int tid){
         return courseService.getCourseTerm(tid);
+    }
+
+    @RequestMapping(value = "getCoursesTerm",produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public List<Map<String,Object>> getCoursesTerm (int tid){
+        return courseService.getCourseScoreTerm(tid);
     }
 
     /**
@@ -144,6 +151,12 @@ public class CourseController {
         return courseService.page(page,wrapper);
     }
 
+    @RequestMapping(value = "getCoursesForTermAdd")
+    @ResponseBody
+    public List<Course> getCoursesForTermAdd(){
+        return courseService.list();
+    }
+
     @RequestMapping(value = "getCourseById")
     @ResponseBody
     public Course getCourse(int cid){
@@ -157,7 +170,7 @@ public class CourseController {
         if(flag){
             return "success";
         } else {
-            return "true";
+            return "fail";
         }
     }
 
@@ -195,7 +208,7 @@ public class CourseController {
         if(flag){
             return "success";
         } else {
-            return "true";
+            return "fail";
         }
     }
 
@@ -207,4 +220,11 @@ public class CourseController {
         }
         return "success";
     }
+
+    @RequestMapping("/showAllEntity")
+    @ResponseBody
+    public List<Map> showAllEntity(){
+        return courseService.selectCourseByType();
+    }
+
 }

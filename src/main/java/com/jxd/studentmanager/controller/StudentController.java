@@ -13,6 +13,7 @@ import com.jxd.studentmanager.service.IStudentScoreService;
 import com.jxd.studentmanager.service.IStudentService;
 import com.jxd.studentmanager.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +45,13 @@ public class StudentController {
     private IUserService userService;
     @Autowired
     private IStudentScoreService studentScoreService;
+    @Value(value = "${web.upload-path}")
+    private String path;
+
+    @RequestMapping("/getStudent")
+    @ResponseBody
+    public Student getStudent(int eid) {return studentService.getStudentByEid(eid);}
+
 
     @RequestMapping("/getSelf")
     @ResponseBody
@@ -210,7 +218,6 @@ public class StudentController {
     @RequestMapping(value = "upload", produces = "text/html;charset=utf-8")
     @ResponseBody
     public String imgUpload(@RequestParam("photo") MultipartFile file) {
-        String path = "F://Java//mygit//src//main//assests";
         File file_save = new File(path);
         if (!file_save.exists() && !file_save.isDirectory()) {
             file_save.mkdir();
@@ -234,7 +241,6 @@ public class StudentController {
     @RequestMapping("/delImg")
     @ResponseBody
     public String delImg(String imgName) {
-        String path = "F://Java//mygit//src//main//assests";
         if (imgName == null || imgName.length() == 0) {
             return "none";
         }

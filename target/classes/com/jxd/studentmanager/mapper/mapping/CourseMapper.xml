@@ -26,4 +26,8 @@
         select c.cid,cname,isdel,type from course c left join on deptcourse dc on c.cid = dc.cid
         where isdel = 0 and dc.did = #{did}
     </select>
+
+    <select id="selectCourseByType" resultType="java.util.Map">
+        select cname,isdel from course where type = 1
+    </select>
 </mapper>

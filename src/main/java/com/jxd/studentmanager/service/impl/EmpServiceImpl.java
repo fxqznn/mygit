@@ -41,4 +41,9 @@ public class EmpServiceImpl extends ServiceImpl<IEmpMapper, Emp> implements IEmp
     public Map showManager(int eid) {
         return iem.showManager(eid);
     }
+
+    @Override
+    public List<Emp> getEmpByRole(int role) {
+        return iem.selectEmpByRole(role);
+    }
 }

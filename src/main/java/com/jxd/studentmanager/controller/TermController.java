@@ -42,14 +42,15 @@ public class TermController {
 
     @RequestMapping(value = "getAllTerm")
     @ResponseBody
-    public IPage<Term> getAllTerm(Page<Term> page, String tname){
+    public IPage<Term> getAllTerm(Page<Term> page, String tname, int eid){
         QueryWrapper<Term> wrapper = new QueryWrapper<>();
         IPage<Term> list = null;
 
         if(tname == null || "".equals(tname)){
-            list = termService.page(page);
+            wrapper.eq("eid",eid);
+            list = termService.page(page,wrapper);
         } else {
-            wrapper.like("tname",tname);
+            wrapper.like("tname",tname).eq("eid",eid);
             list = termService.page(page,wrapper);
         }
         return list;

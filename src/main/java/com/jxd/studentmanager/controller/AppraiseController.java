@@ -37,18 +37,22 @@ public class AppraiseController {
         return appraiseService.getOne(queryWrapper);
     }
 
-    @RequestMapping("/insert")
+    @RequestMapping("/addApp")
     @ResponseBody
-    public int addAppraise(@RequestParam("content") String content,@RequestParam("sid") int sid
-                            ,@RequestParam("eid")int eid,@RequestParam("type") int type,
-                           @RequestParam("did")int did){
-        Appraise appraise = new Appraise();
-        appraise.setSid(sid);
-        appraise.setContent(content);
-        appraise.setEid(eid);
-        appraise.setType(type);
-        appraise.setDid(did);
-        return appraiseService.addAppraise(appraise);
+    public int addApp(@RequestParam("eid") int eid, @RequestParam("type") int type){
+        return appraiseService.addAppraise(eid, type);
     }
 
+    @RequestMapping("/getApp")
+    @ResponseBody
+    public String getApp(@RequestParam("eid") int eid, @RequestParam("type") int type){
+        return appraiseService.getAppraise(eid,type);
+    }
+
+    @RequestMapping("/updateApp")
+    @ResponseBody
+    public int updateApp(@RequestParam("content")String content,@RequestParam("sid")int sid,
+                         @RequestParam("type")int type){
+        return appraiseService.updateApp(content, sid, type);
+    }
 }
