@@ -77,7 +77,7 @@ public class UserController {
             if (uname == null || "".equals(uname)) {
                 list = userService.page(page);
             } else {
-                wrapper.likeRight("ename", uname);
+                wrapper.likeRight("uname", uname);
                 list = userService.page(page, wrapper);
             }
         } else {
@@ -264,7 +264,7 @@ public class UserController {
     @ResponseBody
     public String delUsersByIdsCascade(int[] uids) {
         for (int uid : uids) {
-            String result = delUserById(uid);
+            String result = delUserWithEmp(uid);
             if (result.equals("fail")) {
                 return "fail";
             }

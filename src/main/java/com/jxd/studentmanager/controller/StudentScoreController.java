@@ -122,6 +122,7 @@ public class StudentScoreController {
                     studentScore.setSid(sid);
                     studentScore.setCid(deptselectcourse.getCid());
                     studentScore.setType(type);
+                    studentScore.setScore(-1);
                     studentScoreService.save(studentScore);
                 }
             }
