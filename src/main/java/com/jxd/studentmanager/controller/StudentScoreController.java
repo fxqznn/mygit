@@ -244,10 +244,15 @@ public class StudentScoreController {
     public IPage<Map<String, Object>> getCourseWithScore(int current, int size, String snamelike, int tid) {
         List<Map<String, Object>> courseWithScore_page = studentService.getScoreWithCourse(current, size, snamelike, tid);
         List<Map<String, Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
+
         boolean flag = true;
         QueryWrapper queryCourse = new QueryWrapper();
         queryCourse.eq("tid", tid);
         List<Course> courses = termCourseService.list(queryCourse);
+        List<Student> students = studentService.list(queryCourse);
+        for(Student student:students){
+            insertStudenScoreBySid(student.getSid(),-1);
+        }
         int courseCount = courses.size();
         for(Map map:courseWithScore_page){
             double sumscore = 0;
