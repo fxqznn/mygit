@@ -173,19 +173,11 @@ public class StudentScoreController {
         return list;
     }
 
-    /**
-     * 修改成绩 (课程与能力)
-     *
-     * @param cid   课程id
-     * @param grade 课程成绩
-     * @param sid   学生id
-     * @param type  成绩类型 0-转正能力评价  1-第一年工作能力评价 2-第二年工作能力评价 3-第三年工作能力评价 4-课程成绩
-     * @return
-     */
+
     @RequestMapping("/updateEmpScore")
     @ResponseBody
-    public String updateEmpScore(int cid, double grade, int sid, int type) {
-        if (studentScoreService.updateEmpScore(cid, grade, sid, type)) {
+    public String updateEmpScore(String cname, double score, int eid, int type) {
+        if (studentScoreService.updateEmpScore(cname, score, eid, type)) {
             return "success";
         } else {
             return "false";

@@ -13,7 +13,7 @@ public interface IStudentScoreService extends IService<StudentScore> {
 
     List<Map<String, Object>> selectAbilities(int sid, int type);
 
-    boolean updateEmpScore(int cid, double grade, int sid, int type);
+    boolean updateEmpScore(String cname, double grade, int eid, int type);
 
     List<Course> getAllEntity(int eid);
 
