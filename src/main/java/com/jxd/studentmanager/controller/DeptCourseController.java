@@ -1,5 +1,7 @@
 package com.jxd.studentmanager.controller;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.jxd.studentmanager.model.DeptCourse;
 import com.jxd.studentmanager.service.IDeptCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ public class DeptCourseController {
     @Autowired
     private IDeptCourseService idcs;
 
+
     @RequestMapping("/getNotSelectedAbility")
     @ResponseBody
     public List<Map> getAbility(int eid){
@@ -38,6 +41,31 @@ public class DeptCourseController {
     @ResponseBody
     public int delAbility(int eid,int cid){
         return idcs.delDeptCourse(eid, cid);
+    }
+
+    @RequestMapping(value = "addDeptCourse")
+    @ResponseBody
+    public String addDeptCourse(DeptCourse deptCourse){
+        boolean flag = idcs.save(deptCourse);
+
+        if(flag){
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+    @RequestMapping(value = "delDeptCourse")
+    @ResponseBody
+    public String delDeptCourse(int did, int cid){
+        UpdateWrapper<DeptCourse> wrapper = new UpdateWrapper<>();
+        wrapper.eq("did",did).eq("cid",cid);
+        boolean flag = idcs.remove(wrapper);
+        if(flag){
+            return "success";
+        } else {
+            return "fail";
+        }
     }
 
 }
