@@ -23,5 +23,5 @@ public interface IStudentScoreService extends IService<StudentScore> {
 
     Map<String,Object> selectAbilitiesScore(@Param("sid") int sid, @Param("type") int type);
 
-    int insertSs(StudentScore ss);
+    List<StudentScore> getOneEmpAbilityScore(int eid,int type);
 }

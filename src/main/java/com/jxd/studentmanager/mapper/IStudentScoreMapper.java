@@ -2,6 +2,7 @@ package com.jxd.studentmanager.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jxd.studentmanager.model.Course;
+import com.jxd.studentmanager.model.Student;
 import com.jxd.studentmanager.model.StudentScore;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,5 +28,7 @@ public interface IStudentScoreMapper extends BaseMapper<StudentScore> {
 
     List<Course> getStudentCourses(@Param("sid") int sid);
 
-    int insertSs(StudentScore ss);
+
+
+    List<StudentScore> getOneEmpAbilityScore(@Param("eid") int eid,@Param("type")int type);
 }

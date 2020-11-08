@@ -34,8 +34,7 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     @Autowired
     private IEmpMapper empMapper;
 
-    @Autowired
-    private IAppraiseMapper appraiseMapper;
+
 
 
     @Override
@@ -113,9 +112,11 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
         return map;
     }
 
-
     @Override
-    public int insertSs(StudentScore ss) {
-        return studentScoreMapper.insertSs(ss);
+    public List<StudentScore> getOneEmpAbilityScore(int eid, int type) {
+        return studentScoreMapper.getOneEmpAbilityScore(eid, type);
     }
+
+
+
 }

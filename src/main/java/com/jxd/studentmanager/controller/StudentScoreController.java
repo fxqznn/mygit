@@ -346,4 +346,19 @@ public class StudentScoreController {
         return courseWithScore;
     }
 
+    @RequestMapping(value = "/getOneAbilityScore", produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public List<Map<Object,Object>> getOas(int eid,int type){
+        List<Map<Object, Object>> list = new ArrayList<>();
+        List<StudentScore> scoreList = studentScoreService.getOneEmpAbilityScore(eid, type);
+        double sum =0;
+        Map<Object, Object> map = new HashMap<>();
+        for (StudentScore studentScore : scoreList) {
+            map.put(studentScore.getCid(),studentScore.getScore());
+            sum+=studentScore.getScore();
+        }double avg = sum/scoreList.size();
+        map.put("avg",avg);
+        list.add(map);
+        return list;
+    }
 }
