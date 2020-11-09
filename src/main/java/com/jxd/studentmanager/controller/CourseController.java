@@ -239,6 +239,8 @@ public class CourseController {
      * @param cname
      * @return
      */
+    @RequestMapping(value = "getAllCourse")
+    @ResponseBody
     public IPage<Course> getAllCourse(Page<Course> page, int type, String cname,int isdel){
         QueryWrapper<Course> wrapper = new QueryWrapper<>();
 
@@ -428,5 +430,18 @@ public class CourseController {
             return "fail";
         }
 
+    }
+
+    @RequestMapping(value = "selectForAdd")
+    @ResponseBody
+    public String selectForAdd(String name){
+        QueryWrapper<Course> courseQueryWrapper = new QueryWrapper<>();
+        courseQueryWrapper.eq("cname",name);
+        Course course = courseService.getOne(courseQueryWrapper);
+        if(course == null){
+            return "yes";
+        } else {
+            return "no";
+        }
     }
 }
