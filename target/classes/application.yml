@@ -13,9 +13,14 @@ spring:
     static-locations: file:${web.upload-path}
 
 
+
 #注册映射文件
 mybatis-plus:
   mapper-locations: classpath*:com/jxd/studentmanager/mapper/mapping/*.xml
   type-aliases-package: com.jxd.studentmanager.model #设置实体类别名
+  configuration:
+    map-underscore-to-camel-case: false
+
 web:
-  upload-path: F:\Java\mygit\src\main\assests
+  upload-path: F:\Java\mygit03\src\main\assests
+
