@@ -24,6 +24,9 @@ public interface IStudentScoreMapper extends BaseMapper<StudentScore> {
     boolean updateEmpScore(@Param("cname")String cname,@Param("score") double score,
                            @Param("eid") int eid,@Param("type") int type);
 
+    boolean updateStudentScore(@Param("cname")String cname,@Param("score") double score,
+                           @Param("sid") int sid,@Param("type") int type,@Param("eid") int eid);
+
     List<Course> getAllEntity(@Param("eid") int eid);
 
     List<Course> getStudentCourses(@Param("sid") int sid);

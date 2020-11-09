@@ -30,11 +30,18 @@ public class CourseServiceImpl extends ServiceImpl<ICourseMapper, Course> implem
     @Autowired
     private ITermCourseMapper termCourseMapper;
     @Override
-    public List<Course> selectCoursesByTid(int page,int size, int tid,int isdel,String cname) {
+    public List<Map<String,Object>> selectCoursesByTid(int page,int size, int tid,int isdel,String cname) {
         int pageSize = size;
         int pageStart = pageSize * (page - 1);
         return courseMapper.selectCoursesByTid(pageStart,pageSize,tid,isdel,cname);
     }
+
+    @Override
+    public List<Map<String,Object>> selectCoursesCount(int tid, int isdel, String cname) {
+        return courseMapper.selectCoursesCount(tid,isdel,cname);
+    }
+
+
 
     @Override
     public List<Course> selectCoursesByDid(int did) {

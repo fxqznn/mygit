@@ -126,13 +126,31 @@ public class TestLoginService {
         }
     }
 
+
     @Test
-    public void testSelectCoursesByTid(){
-        List<Course> coursesAll = courseService.list();
-        List<Course> coursePage = courseService.selectCoursesByTid(1,5,1,2,null);
-        for (Course course:coursePage){
-            System.out.println(course.getCname());
+    public void test(){
+        Course course = new Course();
+        course.setCname("育婴");
+        boolean flag = courseService.save(course);
+        int cid = course.getCid();
+        System.out.println(cid);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("eid",3);
+        List<Term> terms = termService.list(queryWrapper);
+        int tid = 0;  //该老师管理下的最新的一个班级
+        for (Term term : terms){
+            if (tid<term.getTid()){
+                tid = term.getTid();
+            }
         }
+        TermCourse termCourse = new TermCourse();
+        termCourse.setCid(cid);
+        termCourse.setTid(tid);
+        QueryWrapper queryWrapper1 = new QueryWrapper();
+        queryWrapper1.eq("cid",cid);
+        queryWrapper1.eq("tid",tid);
+        TermCourse termCourse1 = termCourseService.getOne(queryWrapper1);
+        boolean flag2 = termCourseService.save(termCourse);
     }
 
     @Test

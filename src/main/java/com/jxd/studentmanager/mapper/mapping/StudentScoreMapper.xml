@@ -59,6 +59,12 @@
         and type = #{type}
     </update>
 
+    <update id="updateStudentScore">
+        update studentscore set score = #{score} ,eid = #{eid} where cid =
+        (select cid from course where cname = #{cname})
+        and sid = #{sid}
+        and type = #{type}
+    </update>
 
     <select id="getAllEntity" resultMap="entity">
         select t1.cid,cname from

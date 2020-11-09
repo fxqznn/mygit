@@ -53,6 +53,11 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     }
 
     @Override
+    public boolean updateStudentScore(String cname, double grade, int sid, int type, int eid) {
+        return studentScoreMapper.updateStudentScore(cname,grade,sid,type,eid);
+    }
+
+    @Override
     public List<Course> getAllEntity(int eid) {
         return studentScoreMapper.getAllEntity(eid);
     }
