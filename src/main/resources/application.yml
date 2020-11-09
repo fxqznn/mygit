@@ -18,4 +18,4 @@ mybatis-plus:
   mapper-locations: classpath*:com/jxd/studentmanager/mapper/mapping/*.xml
   type-aliases-package: com.jxd.studentmanager.model #设置实体类别名
 web:
-  upload-path: F:\Java\mygit\src\main\assests
+  upload-path: D:\mygit10\src\main\assests
