@@ -8,11 +8,14 @@ import java.util.Map;
 
 public interface ICourseService extends IService<Course> {
 
-    List<Course> selectCoursesByTid(int page,int size, int tid,int isdel,String cname);
+    List<Map<String,Object>> selectCoursesByTid(int page,int size, int tid,int isdel,String cname);
+
+    List<Map<String,Object>> selectCoursesCount(int tid,int isdel,String cname);
 
     List<Course> selectCoursesByDid(int did);
 
     List<Map<String,Object>> getCourseTerm(int tid);
+
     List<Map<String,Object>> getCourseScoreTerm(int tid);
 
     List<Map> selectCourseByType();

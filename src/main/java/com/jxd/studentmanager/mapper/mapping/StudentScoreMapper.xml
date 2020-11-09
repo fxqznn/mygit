@@ -52,10 +52,19 @@
     </select>
 
     <update id="updateEmpScore">
-        update studentscore set score = #{grade} where cid = #{cid} and sid = #{sid}
+        update studentscore set score = #{score} where cid =
+        (select cid from course where cname = #{cname})
+        and sid =
+        (select sid from student where eid = #{eid})
         and type = #{type}
     </update>
 
+    <update id="updateStudentScore">
+        update studentscore set score = #{score} ,eid = #{eid} where cid =
+        (select cid from course where cname = #{cname})
+        and sid = #{sid}
+        and type = #{type}
+    </update>
 
     <select id="getAllEntity" resultMap="entity">
         select t1.cid,cname from

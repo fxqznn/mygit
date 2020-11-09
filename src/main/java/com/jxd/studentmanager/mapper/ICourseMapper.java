@@ -13,11 +13,17 @@ public interface ICourseMapper extends BaseMapper<Course> {
      * @param tid
      * @return
      */
-    List<Course> selectCoursesByTid(@Param("pageStart") int pageStart,@Param("pageSize") int pageSize,
+    List<Map<String,Object>> selectCoursesByTid(@Param("pageStart") int pageStart,@Param("pageSize") int pageSize,
                                     @Param("tid") int tid,@Param("isdel") int isdel,@Param("cname") String cname);
+
+    List<Map<String,Object>> selectCoursesCount(@Param("tid") int tid,@Param("isdel") int isdel,@Param("cname") String cname);
 
     List<Course> selectCoursesByDid(int did);
 
     List<Map> selectCourseByType();
+
+
+
+
 
 }

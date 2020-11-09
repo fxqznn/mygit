@@ -79,6 +79,7 @@ public class StudentScoreController {
                 if (isexist == false) {
                     StudentScore studentScore = new StudentScore();
                     studentScore.setSid(sid);
+                    studentScore.setScore(-1);
                     studentScore.setCid(termselectcourse.getCid());
                     studentScore.setType(type);
                     studentScoreService.save(studentScore);
@@ -173,19 +174,11 @@ public class StudentScoreController {
         return list;
     }
 
-    /**
-     * 修改成绩 (课程与能力)
-     *
-     * @param cid   课程id
-     * @param grade 课程成绩
-     * @param sid   学生id
-     * @param type  成绩类型 0-转正能力评价  1-第一年工作能力评价 2-第二年工作能力评价 3-第三年工作能力评价 4-课程成绩
-     * @return
-     */
+
     @RequestMapping("/updateEmpScore")
     @ResponseBody
-    public String updateEmpScore(int cid, double grade, int sid, int type) {
-        if (studentScoreService.updateEmpScore(cid, grade, sid, type)) {
+    public String updateEmpScore(String cname, double score, int eid, int type) {
+        if (studentScoreService.updateEmpScore(cname, score, eid, type)) {
             return "success";
         } else {
             return "false";
@@ -245,7 +238,6 @@ public class StudentScoreController {
     public IPage<Map<String, Object>> getCourseWithScore(int current, int size, String snamelike, int tid) {
         List<Map<String, Object>> courseWithScore_page = studentService.getScoreWithCourse(current, size, snamelike, tid);
         List<Map<String, Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
-
         boolean flag = true;
         QueryWrapper queryCourse = new QueryWrapper();
         queryCourse.eq("tid", tid);
@@ -344,6 +336,18 @@ public class StudentScoreController {
             courseWithScore.add(map);
         }
         return courseWithScore;
+    }
+
+    @RequestMapping(value = "updateStudentScore02",produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String updateStudentScore(String cname,double score,int eid,int sid){
+        boolean flag = studentScoreService.updateStudentScore(cname,score,sid,-1,eid);
+        if (flag){
+            return "success";
+        } else {
+            return "fail";
+        }
+
     }
 
     @RequestMapping(value = "/getOneAbilityScore", produces = "application/json;charset=utf-8")
