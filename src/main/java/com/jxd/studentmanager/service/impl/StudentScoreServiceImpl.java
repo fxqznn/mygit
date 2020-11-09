@@ -35,8 +35,6 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     private IEmpMapper empMapper;
 
 
-
-
     @Override
     public List<Map<String, Object>> selectCourses(int sid) {
         return studentScoreMapper.selectCourses(sid);
@@ -74,9 +72,14 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
         map.put("ename", list.get(0).get("ename"));
         map.put("tname", list.get(0).get("tname"));
         double avg = 0;
+        double sum = 0;
         for (Map map1 : list) {
-            map.put(map1.get("cid").toString(), map1.get("score"));
-            double sum = 0;
+            if ((Double) map1.get("score") != -1) {
+                map.put(map1.get("cid").toString(), map1.get("score"));
+            } else {
+                map.put(map1.get("cid").toString(), "未评分");
+                map.put("avg", "未评分");
+            }
             sum += (double) map1.get("score");
             avg = sum / list.size();
         }
@@ -84,7 +87,7 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
         if (courseList.size() != list.size()) {
             map.put("avg", "未评分");
         } else {
-            map.put("avg", avg);
+            map.put("avg", String.format("%.2f", avg));
         }
         return map;
     }
@@ -92,6 +95,9 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     @Override
     public Map<String, Object> selectAbilitiesScore(int sid, int type) {
         Map<String, Object> map = new HashMap<>();
+        if (selectAbilities(sid, type).size() == 0) {
+            return map;
+        }
         QueryWrapper queryWrapper = new QueryWrapper();
         Map<String, Object> querymap = new HashMap<>();
         querymap.put("sid", sid);
@@ -102,17 +108,21 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
         map.put("dname", list.get(0).get("dname"));
         map.put("job", emp.getJob());
         double avg = 0;
+        double sum = 0;
         for (Map map1 : list) {
-            map.put(map1.get("cid").toString(), map1.get("score"));
-            double sum = 0;
+            if ((Double) map1.get("score") != -1) {
+                map.put(map1.get("cid").toString(), map1.get("score"));
+            } else {
+                map.put(map1.get("cid").toString(), "未评分");
+                map.put("avg", "未评分");
+            }
             sum += (double) map1.get("score");
             avg = sum / list.size();
         }
-        List<Course> courseList = studentScoreMapper.getAllEntity(emp.getEid());
-        if (courseList.size() != list.size()) {
-            map.put("avg", "未评分");
+        if (map.get("avg") != null) {
+            return map;
         } else {
-            map.put("avg", avg);
+            map.put("avg", String.format("%.2f", avg));
         }
         return map;
     }
@@ -121,7 +131,6 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     public List<StudentScore> getOneEmpAbilityScore(int eid, int type) {
         return studentScoreMapper.getOneEmpAbilityScore(eid, type);
     }
-
 
 
 }
