@@ -79,6 +79,7 @@ public class StudentScoreController {
                 if (isexist == false) {
                     StudentScore studentScore = new StudentScore();
                     studentScore.setSid(sid);
+                    studentScore.setScore(-1);
                     studentScore.setCid(termselectcourse.getCid());
                     studentScore.setType(type);
                     studentScoreService.save(studentScore);
