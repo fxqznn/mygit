@@ -26,15 +26,31 @@ public class AppraiseController {
     @Autowired
     private IAppraiseService appraiseService;
 
-    @RequestMapping("/getAppraise/{sid}/{type}")
+    @RequestMapping("/getAppraise/{sid}/{type}/{eid}")
     @ResponseBody
-    public Appraise getAppraise(@PathVariable("sid") int sid, @PathVariable("type") int type) {
+    public Appraise getAppraise(@PathVariable("sid") int sid, @PathVariable("type") int type,@PathVariable("eid") int eid) {
+        Appraise addApp = new Appraise();
+        addApp.setContent("未评价");
+        addApp.setSid(sid);
+        addApp.setType(-1);
+        addApp.setEid(eid);
         Map<String, Object> map = new HashMap<>();
         map.put("sid", sid);
         map.put("type", type);
         QueryWrapper<Appraise> queryWrapper = new QueryWrapper<>();
         queryWrapper.allEq(map, true);
-        return appraiseService.getOne(queryWrapper);
+        Appraise appraise = appraiseService.getOne(queryWrapper);
+        if (appraise != null){
+            return appraise;
+        } else {
+            boolean flag = appraiseService.save(addApp);
+            if (flag){
+                return addApp;
+            } else {
+                return null;
+            }
+        }
+
     }
 
     @RequestMapping("/addApp")

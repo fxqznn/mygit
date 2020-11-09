@@ -85,7 +85,7 @@ public class DeptController {
 
     @RequestMapping(value = "addDept")
     @ResponseBody
-    public String addDept(Dept dept, List<Course> courses) {
+    public String addDept(Dept dept) {
         boolean flag = deptService.save(dept);
 
         if (flag) {
@@ -97,7 +97,7 @@ public class DeptController {
 
     @RequestMapping(value = "editDept")
     @ResponseBody
-    public String editDept(Dept dept, List<Course> checkCourses) {
+    public String editDept(Dept dept) {
         boolean flag = deptService.updateById(dept);
         if (flag) {
             return "success";
