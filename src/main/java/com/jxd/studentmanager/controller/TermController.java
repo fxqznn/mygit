@@ -113,6 +113,10 @@ public class TermController {
     @RequestMapping(value = "addTerm")
     @ResponseBody
     public String addTerm( Term term){
+        if("".equals(term.getTdate())){
+            term.setTdate(null);
+        }
+
         boolean flag = termService.save(term);
 
         if(flag) {
