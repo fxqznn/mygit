@@ -167,4 +167,21 @@ public class TermController {
         List<Term> terms = termService.list(queryWrapper);
         return terms;
     }
+    @RequestMapping(value = "getTerm" ,produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public Term getNewTerm(int eid){
+        QueryWrapper queryWrapper1 = new QueryWrapper();
+        queryWrapper1.eq("eid",eid);
+        List<Term> terms = termService.list(queryWrapper1);
+        int tid = 0;
+        Term newTerm = new Term();  //该老师管理下的最新的一个班级
+        for (Term term : terms){
+            if (tid < term.getTid()){
+                tid = term.getTid();
+                newTerm = term;
+            }
+        }
+        return newTerm;
+    }
+
 }

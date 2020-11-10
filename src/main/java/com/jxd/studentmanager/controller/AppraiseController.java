@@ -34,8 +34,10 @@ public class AppraiseController {
         map.put("type", type);
         QueryWrapper<Appraise> queryWrapper = new QueryWrapper<>();
         queryWrapper.allEq(map, true);
+
         return appraiseService.getOne(queryWrapper);
     }
+
 
     @RequestMapping("/addApp")
     @ResponseBody

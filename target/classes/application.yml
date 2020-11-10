@@ -22,5 +22,4 @@ mybatis-plus:
     map-underscore-to-camel-case: false
 
 web:
-  upload-path: F:\Java\mygit03\src\main\assests
-
+  upload-path: D:\mygit10\src\main\assests
