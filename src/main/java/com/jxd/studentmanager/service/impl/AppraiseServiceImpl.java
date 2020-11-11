@@ -40,4 +40,9 @@ public class AppraiseServiceImpl extends ServiceImpl<IAppraiseMapper, Appraise> 
     public int updateApp02(double sumscore, int sid, int type) {
         return appraiseMapper.updateApp02(sumscore,sid,type);
     }
+
+    @Override
+    public double getSumscore(int eid, int type) {
+        return appraiseMapper.getSumscore(eid, type);
+    }
 }

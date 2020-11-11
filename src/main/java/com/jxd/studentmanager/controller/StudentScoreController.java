@@ -126,7 +126,7 @@ public class StudentScoreController {
                     studentScore.setSid(sid);
                     studentScore.setCid(deptselectcourse.getCid());
                     studentScore.setType(type);
-                    studentScore.setScore(-1);
+                    //studentScore.setScore(0);
                     studentScoreService.save(studentScore);
                 }
             }
@@ -304,27 +304,28 @@ public class StudentScoreController {
 
     @RequestMapping(value = "showAbilityScore", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public List<Map<Object, Object>> showAs(@RequestParam("eid") int eid, int type, @RequestParam("ename") String ename) {
+    public List<Map<Object, Object>> showAs(@RequestParam("eid") int eid,@RequestParam("type") int type, @RequestParam("ename") String ename) {
         List<Map<Object, Object>> courseWithScore = new ArrayList<>();
         List<Emp> empList = empService.selectEmp(eid, ename);
         for (Emp emp : empList) {
+
             insertStudentScoreByEid(emp.getEid(),type);
             Map<Object, Object> map = new HashMap<>();
             List<StudentScore> scoreList = empService.selectScores(type, emp.getEid());
             map.put("eid", emp.getEid());
             map.put("ename", emp.getEname());
             map.put("job", emp.getJob());
-            double sum = 0;
+
             for (StudentScore ss : scoreList) {
-
                 map.put(Integer.toString(ss.getCid()), Double.toString(ss.getScore()));
-
-                sum += ss.getScore();
-
             }
-            double avg = sum / scoreList.size();
-            map.put("avg", avg);
+            String s = appraiseService.getAppraise(emp.getEid(),type);
+            if (s==""||s==null){
+                appraiseService.addAppraise(emp.getEid(),type);
+            }
+            map.put("sumscore",Double.toString(appraiseService.getSumscore(emp.getEid(),type)));
             courseWithScore.add(map);
+
         }
         return courseWithScore;
     }
@@ -346,13 +347,12 @@ public class StudentScoreController {
     public List<Map<Object,Object>> getOas(int eid,int type){
         List<Map<Object, Object>> list = new ArrayList<>();
         List<StudentScore> scoreList = studentScoreService.getOneEmpAbilityScore(eid, type);
-        double sum =0;
+
         Map<Object, Object> map = new HashMap<>();
         for (StudentScore studentScore : scoreList) {
             map.put(studentScore.getCid(),studentScore.getScore());
-            sum+=studentScore.getScore();
-        }double avg = sum/scoreList.size();
-        map.put("avg",avg);
+        }
+        map.put("sumscore",appraiseService.getSumscore(eid, type));
         list.add(map);
         return list;
     }
