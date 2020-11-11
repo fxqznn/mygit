@@ -16,6 +16,7 @@ public class Appraise {
     @TableId(type = IdType.AUTO)
     private int pid;
     private String content;
+    private double sumscore;
     private int sid;
     private int eid;
     private int did;
@@ -30,6 +31,14 @@ public class Appraise {
     }
 
     public Appraise() {
+    }
+
+    public double getSumscore() {
+        return sumscore;
+    }
+
+    public void setSumscore(double sumscore) {
+        this.sumscore = sumscore;
     }
 
     public int getPid() {
