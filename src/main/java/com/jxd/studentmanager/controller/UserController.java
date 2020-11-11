@@ -103,6 +103,13 @@ public class UserController {
         return userService.getById(uid);
     }
 
+    //getPassword
+    @RequestMapping(value = "getPassword")
+    @ResponseBody
+    public String getPassword(int uid) {
+        return userService.getById(uid).getPwd();
+    }
+
     /**
      * 通过姓名和角色创建用户
      * 先创建员工信息，获取员工的id，在添加账号信息，如果是学生的话，需要为学生添加一个账户
