@@ -26,7 +26,7 @@
         </foreach>
         from studentscore ss  where type = -1
         group by sid order by sid)m on s.sid=m.sid) a left join (
-        select sid
+        select sid,sumscore
         ,max(case when type = 0 then content else 0 end) s1
         ,max(case when type = 1 then content else 0 end) s2
         ,max(case when type = 2 then content else 0 end) s3
@@ -56,7 +56,7 @@
         </foreach>
         from studentscore ss  where type = -1
         group by sid order by sid)m on s.sid=m.sid) a left join (
-        select sid
+        select sid,sumscore
         ,max(case when type = 0 then content else 0 end) s1
         ,max(case when type = 1 then content else 0 end) s2
         ,max(case when type = 2 then content else 0 end) s3

@@ -16,4 +16,8 @@
         update appraise set content = #{content} where sid = #{sid} and type = #{type}
     </update>
 
+    <update id="updateApp02">
+        update appraise set sumscore = #{sumscore} where sid = #{sid} and type = #{type}
+    </update>
+
 </mapper>

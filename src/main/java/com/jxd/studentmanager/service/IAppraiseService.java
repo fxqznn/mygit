@@ -9,4 +9,5 @@ public interface IAppraiseService extends IService<Appraise> {
 
     int updateApp(String content,int sid,int type);
 
+    int updateApp02(double sumscore,int sid,int type);
 }
