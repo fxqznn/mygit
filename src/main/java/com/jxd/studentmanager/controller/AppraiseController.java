@@ -32,6 +32,7 @@ public class AppraiseController {
         Appraise addApp = new Appraise();
         addApp.setContent("未评价");
         addApp.setSid(sid);
+        addApp.setSumscore(-1);
         addApp.setType(-1);
         addApp.setEid(eid);
         Map<String, Object> map = new HashMap<>();
@@ -53,6 +54,7 @@ public class AppraiseController {
 
     }
 
+
     @RequestMapping("/addApp")
     @ResponseBody
     public int addApp(@RequestParam("eid") int eid, @RequestParam("type") int type){
@@ -70,5 +72,12 @@ public class AppraiseController {
     public int updateApp(@RequestParam("content")String content,@RequestParam("sid")int sid,
                          @RequestParam("type")int type){
         return appraiseService.updateApp(content, sid, type);
+    }
+
+    @RequestMapping("/updateApp02")
+    @ResponseBody
+    public int updateApp02(@RequestParam("sumscore")double sumscore,@RequestParam("sid")int sid,
+                         @RequestParam("type")int type){
+        return appraiseService.updateApp02(sumscore, sid, type);
     }
 }
