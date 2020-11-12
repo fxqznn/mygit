@@ -3,6 +3,7 @@ package com.jxd.studentmanager.controller;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.jxd.studentmanager.model.DeptCourse;
 import com.jxd.studentmanager.service.IDeptCourseService;
+import com.jxd.studentmanager.service.IStudentScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,8 @@ public class DeptCourseController {
 
     @Autowired
     private IDeptCourseService idcs;
+    @Autowired
+    private IStudentScoreService isss;
 
 
     @RequestMapping("/getNotSelectedAbility")
@@ -40,6 +43,7 @@ public class DeptCourseController {
     @RequestMapping("/delAbility")
     @ResponseBody
     public int delAbility(int eid,int cid){
+        isss.delSs(cid);
         return idcs.delDeptCourse(eid, cid);
     }
 
