@@ -155,6 +155,7 @@ public class StudentScoreController {
         QueryWrapper<Student> wrapper = new QueryWrapper<>();
         wrapper.eq("eid", eid);
         Student student = studentService.getOne(wrapper);
+        /*System.out.println(student.getSid());*/
         insertStudenScoreBySid(student.getSid(), type);
     }
 
@@ -180,8 +181,8 @@ public class StudentScoreController {
 
     @RequestMapping("/updateEmpScore")
     @ResponseBody
-    public String updateEmpScore(String cname, double score, int eid, int type) {
-        if (studentScoreService.updateEmpScore(cname, score, eid, type)) {
+    public String updateEmpScore(String cname, double score, int eid, int type,String ename,int did) {
+        if (studentScoreService.updateEmpScore(cname, score, eid, type, ename, did)) {
             return "success";
         } else {
             return "false";
@@ -307,8 +308,9 @@ public class StudentScoreController {
     public List<Map<Object, Object>> showAs(@RequestParam("eid") int eid,@RequestParam("type") int type, @RequestParam("ename") String ename) {
         List<Map<Object, Object>> courseWithScore = new ArrayList<>();
         List<Emp> empList = empService.selectEmp(eid, ename);
-        for (Emp emp : empList) {
 
+        for (Emp emp : empList) {
+            /*System.out.println(emp.getEid());*/
             insertStudentScoreByEid(emp.getEid(),type);
             Map<Object, Object> map = new HashMap<>();
             List<StudentScore> scoreList = empService.selectScores(type, emp.getEid());
