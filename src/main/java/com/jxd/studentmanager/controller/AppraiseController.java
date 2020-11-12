@@ -28,7 +28,7 @@ public class AppraiseController {
 
     @RequestMapping("/getAppraise/{sid}/{type}/{eid}")
     @ResponseBody
-    public Appraise getAppraise(@PathVariable("sid") int sid, @PathVariable("type") int type,@PathVariable("eid") int eid) {
+    public Appraise getAppraise(@PathVariable("sid") int sid, @PathVariable("type") int type, @PathVariable("eid") int eid) {
         Appraise addApp = new Appraise();
         addApp.setContent("未评价");
         addApp.setSid(sid);
@@ -41,11 +41,11 @@ public class AppraiseController {
         QueryWrapper<Appraise> queryWrapper = new QueryWrapper<>();
         queryWrapper.allEq(map, true);
         Appraise appraise = appraiseService.getOne(queryWrapper);
-        if (appraise != null){
+        if (appraise != null) {
             return appraise;
         } else {
             boolean flag = appraiseService.save(addApp);
-            if (flag){
+            if (flag) {
                 return addApp;
             } else {
                 return null;
@@ -57,27 +57,43 @@ public class AppraiseController {
 
     @RequestMapping("/addApp")
     @ResponseBody
-    public int addApp(@RequestParam("eid") int eid, @RequestParam("type") int type){
+    public int addApp(@RequestParam("eid") int eid, @RequestParam("type") int type) {
         return appraiseService.addAppraise(eid, type);
     }
 
     @RequestMapping("/getApp")
     @ResponseBody
-    public String getApp(@RequestParam("eid") int eid, @RequestParam("type") int type){
-        return appraiseService.getAppraise(eid,type);
+    public String getApp(@RequestParam("eid") int eid, @RequestParam("type") int type) {
+        return appraiseService.getAppraise(eid, type);
     }
 
     @RequestMapping("/updateApp")
     @ResponseBody
-    public int updateApp(@RequestParam("content")String content,@RequestParam("sid")int sid,
-                         @RequestParam("type")int type){
+    public int updateApp(@RequestParam("content") String content, @RequestParam("sid") int sid,
+                         @RequestParam("type") int type) {
         return appraiseService.updateApp(content, sid, type);
     }
 
     @RequestMapping("/updateApp02")
     @ResponseBody
-    public int updateApp02(@RequestParam("sumscore")double sumscore,@RequestParam("sid")int sid,
-                         @RequestParam("type")int type){
+    public int updateApp02(@RequestParam("sumscore") double sumscore, @RequestParam("sid") int sid,
+                           @RequestParam("type") int type) {
         return appraiseService.updateApp02(sumscore, sid, type);
+    }
+
+    @RequestMapping("/getContent/{sid}/{type}")
+    @ResponseBody
+    public String getContent(@PathVariable("sid") int sid, @PathVariable("type") int type) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("sid", sid);
+        map.put("type", type);
+        QueryWrapper<Appraise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.allEq(map, true);
+        Appraise appraise = appraiseService.getOne(queryWrapper);
+        if (appraise != null) {
+            return appraise.getContent();
+        } else {
+            return "fail";
+        }
     }
 }

@@ -9,8 +9,6 @@ import com.jxd.studentmanager.model.Appraise;
 import com.jxd.studentmanager.model.Course;
 import com.jxd.studentmanager.model.Emp;
 import com.jxd.studentmanager.model.StudentScore;
-import com.jxd.studentmanager.service.IAppraiseService;
-import com.jxd.studentmanager.service.IEmpService;
 import com.jxd.studentmanager.service.IStudentScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +32,9 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     @Autowired
     private IEmpMapper empMapper;
 
+    @Autowired
+    private IAppraiseMapper appraiseMapper;
+
 
     @Override
     public List<Map<String, Object>> selectCourses(int sid) {
@@ -52,7 +53,7 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
 
     @Override
     public boolean updateStudentScore(String cname, double grade, int sid, int type, int eid) {
-        return studentScoreMapper.updateStudentScore(cname,grade,sid,type,eid);
+        return studentScoreMapper.updateStudentScore(cname, grade, sid, type, eid);
     }
 
     @Override
@@ -71,8 +72,12 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
         List<Map<String, Object>> list = selectCourses(sid);
         map.put("ename", list.get(0).get("ename"));
         map.put("tname", list.get(0).get("tname"));
-        double avg = 0;
-        double sum = 0;
+        QueryWrapper queryWrapper1 = new QueryWrapper();
+        Map<String, Object> querymap1 = new HashMap<>();
+        querymap1.put("sid", sid);
+        querymap1.put("type", -1);
+        queryWrapper1.allEq(querymap1,true);
+        Appraise appraise = appraiseMapper.selectOne(queryWrapper1);
         for (Map map1 : list) {
             if ((Double) map1.get("score") != -1) {
                 map.put(map1.get("cid").toString(), map1.get("score"));
@@ -80,14 +85,12 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
                 map.put(map1.get("cid").toString(), "未评分");
                 map.put("avg", "未评分");
             }
-            sum += (double) map1.get("score");
-            avg = sum / list.size();
         }
         List<Course> courseList = studentScoreMapper.getStudentCourses(sid);
         if (courseList.size() != list.size()) {
             map.put("avg", "未评分");
         } else {
-            map.put("avg", String.format("%.2f", avg));
+            map.put("avg", String.format("%.2f", appraise.getSumscore()));
         }
         return map;
     }
@@ -107,8 +110,12 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
         map.put("ename", list.get(0).get("ename"));
         map.put("dname", list.get(0).get("dname"));
         map.put("job", emp.getJob());
-        double avg = 0;
-        double sum = 0;
+        QueryWrapper queryWrapper1 = new QueryWrapper();
+        Map<String, Object> querymap1 = new HashMap<>();
+        querymap1.put("sid", sid);
+        querymap1.put("type", type);
+        queryWrapper1.allEq(querymap1, true);
+        Appraise appraise = appraiseMapper.selectOne(queryWrapper1);
         for (Map map1 : list) {
             if ((Double) map1.get("score") != -1) {
                 map.put(map1.get("cid").toString(), map1.get("score"));
@@ -116,13 +123,11 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
                 map.put(map1.get("cid").toString(), "未评分");
                 map.put("avg", "未评分");
             }
-            sum += (double) map1.get("score");
-            avg = sum / list.size();
         }
         if (map.get("avg") != null) {
             return map;
         } else {
-            map.put("avg", String.format("%.2f", avg));
+            map.put("avg", String.format("%.2f", appraise.getSumscore()));
         }
         return map;
     }
@@ -133,8 +138,8 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
     }
 
     @Override
-    public int delSs( int cid) {
-        return studentScoreMapper.delSs( cid);
+    public int delSs(int cid) {
+        return studentScoreMapper.delSs(cid);
     }
 
 
