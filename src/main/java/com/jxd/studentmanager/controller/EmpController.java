@@ -165,13 +165,27 @@ public class EmpController {
 
         Emp emp1 = empService.getById(eid);
         if(emp1.getIsdel() == 1){
-            QueryWrapper<StudentScore> wrapper1 = new QueryWrapper<>();
-            wrapper1.eq("eid",eid);
-            int num = studentScoreService.count(wrapper1);
-            if(num == 0){
+            if(emp1.getSid() != 0){
+                //学生账号
+                QueryWrapper<Student> wrapper1 = new QueryWrapper<>();
+                wrapper1.eq("eid",eid);
+                Student student = studentService.getOne(wrapper1);
+
+                UpdateWrapper<StudentScore> wrapper2 = new UpdateWrapper<>();
+                wrapper2.eq("sid",student.getSid());
+                flag = studentScoreService.remove(wrapper2);
+
+                flag = studentService.removeById(student.getSid());
                 flag = empService.removeById(eid);
+            } else {
+                QueryWrapper<StudentScore> wrapper1 = new QueryWrapper<>();
+                wrapper1.eq("eid",eid);
+                int num = studentScoreService.count(wrapper1);
+                if(num == 0){
+                    flag = empService.removeById(eid);
+                }
+                return "success";
             }
-            return "success";
         }
 
         QueryWrapper<User> wrapper = new QueryWrapper<>();
@@ -224,8 +238,18 @@ public class EmpController {
     @ResponseBody
     public String delEmpById(int eid) {
         Emp emp = empService.getById(eid);
+
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("uname",eid);
+        User user = userService.getOne(wrapper);
+        if(user != null){
+            userService.removeById(user.getUid());
+        }
+
         emp.setIsdel(1);
         boolean flag = empService.updateById(emp);
+
+
         if (flag) {
             return "success";
         } else {

@@ -31,7 +31,7 @@ public interface IStudentScoreMapper extends BaseMapper<StudentScore> {
 
     List<Course> getStudentCourses(@Param("sid") int sid);
 
-
+    int delSs(@Param("cid")int cid);
 
     List<StudentScore> getOneEmpAbilityScore(@Param("eid") int eid,@Param("type")int type);
 }

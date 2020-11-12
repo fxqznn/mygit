@@ -46,6 +46,9 @@ public class StudentScoreController {
     @Autowired
     private ITermService termService;
 
+    @Autowired
+    private IAppraiseService appraiseService;
+
 
     /**
      * 通过学生id查询成绩时调用,根据学生的id和查询成绩的类型调用
@@ -123,7 +126,7 @@ public class StudentScoreController {
                     studentScore.setSid(sid);
                     studentScore.setCid(deptselectcourse.getCid());
                     studentScore.setType(type);
-                    studentScore.setScore(-1);
+                    //studentScore.setScore(0);
                     studentScoreService.save(studentScore);
                 }
             }
@@ -238,7 +241,6 @@ public class StudentScoreController {
     public IPage<Map<String, Object>> getCourseWithScore(int current, int size, String snamelike, int tid) {
         List<Map<String, Object>> courseWithScore_page = studentService.getScoreWithCourse(current, size, snamelike, tid);
         List<Map<String, Object>> courseWithScore = studentService.getAllScoreWithCourse(snamelike, tid);
-        boolean flag = true;
         QueryWrapper queryCourse = new QueryWrapper();
         queryCourse.eq("tid", tid);
         List<Course> courses = termCourseService.list(queryCourse);
@@ -246,27 +248,17 @@ public class StudentScoreController {
         for(Student student:students){
             insertStudenScoreBySid(student.getSid(),-1);
         }
-        int courseCount = courses.size();
         for(Map map:courseWithScore_page){
-            double sumscore = 0;
+
             QueryWrapper queryWrapper = new QueryWrapper();
             queryWrapper.eq("sid", map.get("sid"));
             queryWrapper.eq("type", -1);
             List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
             for (StudentScore studentScore : studentScores) {
                 map.put("z"+studentScore.getCid(),studentScore.getScore());
-                if (studentScore.getScore() >= 0) {
-                    sumscore += studentScore.getScore();
-                } else {
-                    flag = false;
-                    continue;
-                }
+
             }
-            if (flag) {
-                map.put("sumscore", sumscore / courseCount);
-            } else {
-                map.put("sumscore", -1);
-            }
+
         }
         IPage<Map<String, Object>> page = new Page<>();
         page.setCurrent(current);
@@ -279,8 +271,7 @@ public class StudentScoreController {
     @RequestMapping(value = "getStudentScoresBySid",produces = "application/json;charset=utf-8")
     @ResponseBody
     public List<Map<String,Object>> getStudentScoresBySid(int sid,int tid){
-        double sumscore = 0;
-        boolean flag = true;
+        insertStudenScoreBySid(sid,-1);
         Term term = termService.getById(tid);
         Map<String,Object> emp = empService.showManager(term.getEid());
         List<Map<String,Object>> studentScoresBySid = new ArrayList<>();
@@ -291,20 +282,20 @@ public class StudentScoreController {
         queryWrapper.allEq(queryMap);
         List<StudentScore> studentScores = studentScoreService.list(queryWrapper);
         Map<String,Object> map = new HashMap<>();
-        int courseCount = studentScores.size();
         for (StudentScore studentScore:studentScores){
             map.put(Integer.toString(studentScore.getCid()),studentScore.getScore());
-            if (studentScore.getScore() >= 0) {
-                sumscore += studentScore.getScore();
-            } else {
-                flag = false;
-            }
         }
-        if (flag) {
-            map.put("sumscore", sumscore / courseCount);
-        } else {
-            map.put("sumscore", -1);
+        Map<String, Object> mapApp = new HashMap<>();
+        mapApp.put("sid", sid);
+        mapApp.put("type", -1);
+        QueryWrapper<Appraise> queryApp = new QueryWrapper<>();
+        queryWrapper.allEq(mapApp, true);
+        List<Appraise> appraises = appraiseService.list(queryApp);
+        double sumscore = 0;
+        for (Appraise appraise:appraises){
+            sumscore = appraise.getSumscore();
         }
+        map.put("sumscore",sumscore);
         map.put("tname",term.getTname());
         map.put("ename",emp.get("ename"));
         studentScoresBySid.add(map);
@@ -313,27 +304,28 @@ public class StudentScoreController {
 
     @RequestMapping(value = "showAbilityScore", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public List<Map<Object, Object>> showAs(@RequestParam("eid") int eid, int type, @RequestParam("ename") String ename) {
+    public List<Map<Object, Object>> showAs(@RequestParam("eid") int eid,@RequestParam("type") int type, @RequestParam("ename") String ename) {
         List<Map<Object, Object>> courseWithScore = new ArrayList<>();
         List<Emp> empList = empService.selectEmp(eid, ename);
         for (Emp emp : empList) {
+
             insertStudentScoreByEid(emp.getEid(),type);
             Map<Object, Object> map = new HashMap<>();
             List<StudentScore> scoreList = empService.selectScores(type, emp.getEid());
             map.put("eid", emp.getEid());
             map.put("ename", emp.getEname());
             map.put("job", emp.getJob());
-            double sum = 0;
+
             for (StudentScore ss : scoreList) {
-
                 map.put(Integer.toString(ss.getCid()), Double.toString(ss.getScore()));
-
-                sum += ss.getScore();
-
             }
-            double avg = sum / scoreList.size();
-            map.put("avg", avg);
+            String s = appraiseService.getAppraise(emp.getEid(),type);
+            if (s==""||s==null){
+                appraiseService.addAppraise(emp.getEid(),type);
+            }
+            map.put("sumscore",Double.toString(appraiseService.getSumscore(emp.getEid(),type)));
             courseWithScore.add(map);
+
         }
         return courseWithScore;
     }
@@ -355,13 +347,12 @@ public class StudentScoreController {
     public List<Map<Object,Object>> getOas(int eid,int type){
         List<Map<Object, Object>> list = new ArrayList<>();
         List<StudentScore> scoreList = studentScoreService.getOneEmpAbilityScore(eid, type);
-        double sum =0;
+
         Map<Object, Object> map = new HashMap<>();
         for (StudentScore studentScore : scoreList) {
             map.put(studentScore.getCid(),studentScore.getScore());
-            sum+=studentScore.getScore();
-        }double avg = sum/scoreList.size();
-        map.put("avg",avg);
+        }
+        map.put("sumscore",appraiseService.getSumscore(eid, type));
         list.add(map);
         return list;
     }

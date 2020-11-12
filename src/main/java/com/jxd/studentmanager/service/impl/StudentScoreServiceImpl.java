@@ -132,5 +132,10 @@ public class StudentScoreServiceImpl extends ServiceImpl<IStudentScoreMapper, St
         return studentScoreMapper.getOneEmpAbilityScore(eid, type);
     }
 
+    @Override
+    public int delSs( int cid) {
+        return studentScoreMapper.delSs( cid);
+    }
+
 
 }

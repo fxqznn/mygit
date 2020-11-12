@@ -87,4 +87,8 @@
         and type = #{type}
     </select>
 
+    <delete id="delSs">
+        delete from studentscore where cid = #{cid}
+    </delete>
+
 </mapper>

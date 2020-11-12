@@ -71,10 +71,12 @@ public class StudentController {
     @RequestMapping("/updateSelf")
     @ResponseBody
     public String updateSelf(Student student) {
-        boolean flag = studentService.updateById(student);
         if("".equals(student.getBirthday())){
             student.setBirthday(null);
         }
+
+        boolean flag = studentService.updateById(student);
+
         if (flag) {
             return "修改信息成功";
         } else {

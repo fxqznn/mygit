@@ -5,7 +5,7 @@
 <mapper namespace="com.jxd.studentmanager.mapper.IAppraiseMapper">
 
     <insert id="addAppraise" >
-       insert into appraise(content,sid,eid,type) values("未评价",(select sid from student where eid = #{eid}),#{eid},#{type})
+       insert into appraise(content,sid,eid,type,sumscore) values(" ",(select sid from student where eid = #{eid}),#{eid},#{type},0)
     </insert>
 
     <select id="getAppraise" resultType="String">
@@ -15,5 +15,13 @@
     <update id="updateApp">
         update appraise set content = #{content} where sid = #{sid} and type = #{type}
     </update>
+
+    <update id="updateApp02">
+        update appraise set sumscore = #{sumscore} where sid = #{sid} and type = #{type}
+    </update>
+
+    <select id="getSumscore" resultType="Double">
+        select sumscore from appraise where eid = #{eid} and type = #{type}
+    </select>
 
 </mapper>
