@@ -98,7 +98,15 @@ public class DeptController {
     @RequestMapping(value = "editDept")
     @ResponseBody
     public String editDept(Dept dept) {
+
+        if(dept.getDheader() != 0){
+            Emp emp = empService.getById(dept.getDheader());
+            emp.setDid(dept.getDid());
+            empService.updateById(emp);
+        }
+
         boolean flag = deptService.updateById(dept);
+
         if (flag) {
             return "success";
         } else {
