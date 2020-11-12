@@ -9,7 +9,9 @@
     </insert>
 
     <select id="getAppraise" resultType="String">
-        select content from appraise where eid = #{eid} and type =#{type}
+        select content from appraise where
+         sid = (select sid from student where eid = #{eid})
+         and type =#{type}
     </select>
 
     <update id="updateApp">

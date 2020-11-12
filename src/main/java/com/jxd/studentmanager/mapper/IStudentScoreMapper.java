@@ -21,7 +21,8 @@ public interface IStudentScoreMapper extends BaseMapper<StudentScore> {
 
     List<Map<String, Object>> selectAbilities(@Param("sid") int sid, @Param("type") int type);
 
-    boolean updateEmpScore(@Param("cname")String cname,@Param("score") double score,
+    boolean updateEmpScore(@Param("ename")String ename,@Param("did") int did,
+                           @Param("cname")String cname,@Param("score") double score,
                            @Param("eid") int eid,@Param("type") int type);
 
     boolean updateStudentScore(@Param("cname")String cname,@Param("score") double score,

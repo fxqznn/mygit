@@ -52,7 +52,10 @@
     </select>
 
     <update id="updateEmpScore">
-        update studentscore set score = #{score} where cid =
+        update studentscore set score = #{score},
+        eid = (select eid from emp where ename = #{ename}),
+        did = #{did}
+        where cid =
         (select cid from course where cname = #{cname})
         and sid =
         (select sid from student where eid = #{eid})
